@@ -1,0 +1,14 @@
+echo "We'll clone GoSTRIPES from github:"
+echo ""
+git clone https://github.com/BrendelGroup/GoSTRIPES
+
+echo ""
+echo "We do some basic setup. Please follow the instructions."
+GoSTRIPES/templates/xsetup_Sc >& log
+
+echo ""
+echo "Please execute the following command in your working shell before proceeding"
+echo "with xgetstarted2:"
+echo ""
+egrep "^source" log
+echo ""

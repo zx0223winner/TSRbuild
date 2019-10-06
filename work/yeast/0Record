@@ -1,0 +1,58 @@
+#We need to get the genome files set up before we can do anything else:
+#
+cd ScGENOME
+source 0README
+cd ..
+
+#The downloads/stripeseq directory contains empty files with names corresponding to
+#the real read data files on our system.
+#To reproduce our analyses, you must populate the directory with the real goods.
+
+#The file samples.tsv assumes implicitely that the read data are accessible
+#in the download/stripeseq directory under the listed file name prefixes.
+
+#Let's set up a template Makefile to run the workflow:
+#
+sed -e "s#{RAWREAD1}.fq#{RAWREAD1}.fastq.gz#; s#{RAWREAD2}.fq#{RAWREAD2}.fastq.gz#;" ../GoSTRIPES/templates/Makefile_Sc >  Makefile_Sc
+sed -i "s#GCF_000146045.2_R64_genomic.fna#Saccharomyces_cerevisiae.R64-1-1.dna_sm.toplevel.fa#; s#GCF_000146045.2_R64_genomic.gff#Saccharomyces_cerevisiae.R64-1-1.97.gtf#; " Makefile_Sc
+
+#And now we set up the sample directories to get the work done:
+#
+sed -e "s#EXPERIMENT=demo#EXPERIMENT=GSF2268#; s#{READFILESTEM\[i\]}_R1#{READFILESTEM[i]}_R1_001#; s#{READFILESTEM\[i\]}_R2#{READFILESTEM[i]}_R2_001#; " ../GoSTRIPES/templates/xsetup_samples >  xsetup_samples
+chmod a+x xsetup_samples
+#NOTE: You should adjust the Makefile parameters to choices that are appropriate
+#      for your system. As provided, the workflow will run with 8 cores.
+./xsetup_samples
+
+#Ok, one more absolutely necessary preparatory step:
+#
+echo "We must set the rws variable again, as we have moved the gostripes.simg images."
+echo "Execute the following (or equivalent):"
+echo ""
+echo "source ../GoSTRIPES/bin/xworkStripes -b `pwd` -i `pwd`/../gostripes.simg" 
+echo ""
+
+#Now for the real work:
+#
+sed -e "s#EXPERIMENT=demo#EXPERIMENT=GSF2268#; " ../GoSTRIPES/templates/xrun_samples >  xrun_samples
+chmod a+x xrun_samples
+#NOTE: This should take several hours.
+./xrun_samples
+
+#Cleaning up:
+#
+sed -e "s#EXPERIMENT=demo#EXPERIMENT=GSF2268#; " ../GoSTRIPES/templates/xcleanup_samples >  xcleanup_samples
+chmod a+x xcleanup_samples
+#NOTE: This will remove temporary files and archive others, greatly reducing disk
+#      space usage.
+./xcleanup_samples
+
+#NOW:
+#
+# - you will have records of what was done in the sample directories (see err and
+#   logfiles/*).
+#
+# - you should find in this directory bamfiles.tsv, which tabulates the samples and
+#   location of the generated *.bam alignment files. bamfiles.tsv can be used as
+#   input to TSRchitect for the next workflow step: identification of TSS and TSR;
+#   see directory tsr and instructions tsr/0Record.
