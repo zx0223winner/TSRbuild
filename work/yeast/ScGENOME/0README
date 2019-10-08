@@ -7,6 +7,7 @@ YEAST_ASSEMBLY="ftp://ftp.ensembl.org/pub/release-98/fasta/saccharomyces_cerevis
 
 wget -O $(basename $YEAST_ANNOTATION) $YEAST_ANNOTATION
 wget -O $(basename $YEAST_ASSEMBLY)   $YEAST_ASSEMBLY
+gunzip Saccharomyces_cerevisiae.*gz
 
 #rRNA coding regions were collected from 
 #
