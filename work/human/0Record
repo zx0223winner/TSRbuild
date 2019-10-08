@@ -1,6 +1,6 @@
 #We need to get the genome files set up before we can do anything else:
 #
-cd ScGENOME
+cd HsGENOME
 source 0README
 cd ..
 
@@ -12,12 +12,12 @@ cd ..
 
 #Let's set up a template Makefile to run the workflow:
 #
-sed -e "s#{RAWREAD1}.fq#{RAWREAD1}.fastq.gz#; s#{RAWREAD2}.fq#{RAWREAD2}.fastq.gz#;" ../GoSTRIPES/templates/Makefile_Sc >  Makefile_Sc
-sed -i "s#GCF_000146045.2_R64_genomic.fna#Saccharomyces_cerevisiae.R64-1-1.dna_sm.toplevel.fa#; s#GCF_000146045.2_R64_genomic.gff#Saccharomyces_cerevisiae.R64-1-1.98.gff3#; " Makefile_Sc
+sed -e "s#{RAWREAD1}.fq#{RAWREAD1}.fastq.gz#; s#{RAWREAD2}.fq#{RAWREAD2}.fastq.gz#;" ../GoSTRIPES/templates/Makefile_Sc >  Makefile_Hs
+sed -i -e "s#ScGENOME#HsGENOME#; s#GCF_000146045.2_R64_genomic.fna#Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa#; s#GCF_000146045.2_R64_genomic.gff#Homo_sapiens.GRCh38.98.gff3#; s#Sc_grRNA.fa#Hs_grRNA.fa#; s#scrubSAMfile_OPTIONS  = -s 3 -i 50 -I 1000 -t 1500#scrubSAMfile_OPTIONS  = -s 3 -i 50 -I 100000 -t 100500#;" Makefile_Hs
 
 #And now we set up the sample directories to get the work done:
 #
-sed -e "s#EXPERIMENT=demo#EXPERIMENT=GSF2268#; s#{READFILESTEM\[i\]}_R1#{READFILESTEM[i]}_R1_001#; s#{READFILESTEM\[i\]}_R2#{READFILESTEM[i]}_R2_001#; " ../GoSTRIPES/templates/xsetup_samples >  xsetup_samples
+sed -e "s#EXPERIMENT=demo#EXPERIMENT=GSF2268#; s#{READFILESTEM\[i\]}_R1#{READFILESTEM[i]}_R1_001#; s#{READFILESTEM\[i\]}_R2#{READFILESTEM[i]}_R2_001#; s#Makefile_Sc#Makefile_Hs#; " ../GoSTRIPES/templates/xsetup_samples >  xsetup_samples
 chmod a+x xsetup_samples
 #NOTE: You should adjust the Makefile parameters to choices that are appropriate
 #      for your system. As provided, the workflow will run with 8 cores.
