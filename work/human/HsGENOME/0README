@@ -3,7 +3,7 @@
 # ... fetching from Ensembl Genomes
 
 HUMAN_ANNOTATION="ftp://ftp.ensembl.org/pub/release-98/gff3/homo_sapiens/Homo_sapiens.GRCh38.98.chr.gff3.gz"
-HUMAN_ASSEMBLY="wget ftp://ftp.ensembl.org/pub/release-98/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa.gz"
+HUMAN_ASSEMBLY="ftp://ftp.ensembl.org/pub/release-98/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa.gz"
 
 wget -O $(basename $HUMAN_ANNOTATION) $HUMAN_ANNOTATION
 wget -O $(basename $HUMAN_ASSEMBLY)   $HUMAN_ASSEMBLY
