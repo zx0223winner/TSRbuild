@@ -13,7 +13,6 @@ cd ..
 #Let's set up a template Makefile to run the workflow:
 #
 sed -e "s#{RAWREAD1}.fq#{RAWREAD1}.fastq.gz#; s#{RAWREAD2}.fq#{RAWREAD2}.fastq.gz#;" ../GoSTRIPES/templates/Makefile_Sc >  Makefile_Sc
-sed -i "s#GCF_000146045.2_R64_genomic.fna#Saccharomyces_cerevisiae.R64-1-1.dna_sm.toplevel.fa#; s#GCF_000146045.2_R64_genomic.gff#Saccharomyces_cerevisiae.R64-1-1.98.gff3#; " Makefile_Sc
 
 #And now we set up the sample directories to get the work done:
 #
