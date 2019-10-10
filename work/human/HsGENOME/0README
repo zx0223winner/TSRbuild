@@ -11,8 +11,5 @@ wget -O $(basename $HUMAN_ANNOTATION_GTF) $HUMAN_ANNOTATION_GTF
 wget -O $(basename $HUMAN_ASSEMBLY)   $HUMAN_ASSEMBLY
 gunzip Homo_sapiens.*gz
 
-#rRNA coding regions were collect from Ensembl Biomart using the following query:
-#
-#http://useast.ensembl.org/biomart/martview/fafb897cbd4b36b571d79261e13f0be9?VIRTUALSCHEMANAME=default&ATTRIBUTES=hsapiens_gene_ensembl.default.sequences.ensembl_gene_id|hsapiens_gene_ensembl.default.sequences.ensembl_gene_id_version|hsapiens_gene_ensembl.default.sequences.ensembl_transcript_id|hsapiens_gene_ensembl.default.sequences.ensembl_transcript_id_version|hsapiens_gene_ensembl.default.sequences.gene_exon_intron&FILTERS=hsapiens_gene_ensembl.default.filters.biotype."rRNA"&VISIBLEPANEL=resultspanel
-#
-#and saved as file Hs_grRNA.fa (76 genes).
+#rRNA gene sequences were were collected from GenBank and Ensembl and saved as
+#file Hs_rRNA.fa (4 genes).
