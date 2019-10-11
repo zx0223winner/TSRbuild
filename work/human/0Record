@@ -13,7 +13,7 @@ cd ..
 #Let's set up a template Makefile to run the workflow:
 #
 sed -e "s#{RAWREAD1}.fq#{RAWREAD1}.fastq.gz#; s#{RAWREAD2}.fq#{RAWREAD2}.fastq.gz#;" ../GoSTRIPES/templates/Makefile_Sc >  Makefile_Hs
-sed -i -e "s#ScGENOME#HsGENOME#; s#Saccharomyces_cerevisiae.R64-1-1.dna_sm.toplevel.fa#Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa#; s#Saccharomyces_cerevisiae.R64-1-1.98.gtf#Homo_sapiens.GRCh38.98.gtf#; s#Sc_rRNA.fa#Hs_rRNA.fa#; s#scrubSAMfile_OPTIONS  = -s 3 -i 50 -I 1000 -t 1500#scrubSAMfile_OPTIONS  = -s 3 -i 50 -I 100000 -t 100500#;" Makefile_Hs
+sed -i -e "s#ScGENOME#HsGENOME#; s#Saccharomyces_cerevisiae.R64-1-1.dna_sm.toplevel.fa#Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa#; s#Saccharomyces_cerevisiae.R64-1-1.98.gtf#Homo_sapiens.GRCh38.98.chr.gtf#; s#Sc_rRNA.fa#Hs_rRNA.fa#; s#scrubSAMfile_OPTIONS  = -s 3 -i 50 -I 1000 -t 1500#scrubSAMfile_OPTIONS  = -s 3 -i 50 -I 100000 -t 100500#;" Makefile_Hs
 
 #And now we set up the sample directories to get the work done:
 #
