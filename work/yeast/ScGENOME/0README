@@ -2,27 +2,14 @@
 
 # ... fetching from Ensembl Genomes
 
-YEAST_ANNOTATION="ftp://ftp.ensembl.org/pub/release-97/gtf/saccharomyces_cerevisiae/Saccharomyces_cerevisiae.R64-1-1.97.gtf.gz"
-YEAST_ASSEMBLY="ftp://ftp.ensembl.org/pub/release-97/fasta/saccharomyces_cerevisiae/dna/Saccharomyces_cerevisiae.R64-1-1.dna_sm.toplevel.fa.gz"
+YEAST_ANNOTATION_GFF="ftp://ftp.ensembl.org/pub/release-98/gff3/saccharomyces_cerevisiae/Saccharomyces_cerevisiae.R64-1-1.98.gff3.gz"
+YEAST_ANNOTATION_GTF="ftp://ftp.ensembl.org/pub/release-98/gtf/saccharomyces_cerevisiae/Saccharomyces_cerevisiae.R64-1-1.98.gtf.gz"
+YEAST_ASSEMBLY="ftp://ftp.ensembl.org/pub/release-98/fasta/saccharomyces_cerevisiae/dna/Saccharomyces_cerevisiae.R64-1-1.dna_sm.toplevel.fa.gz"
 
-wget -O $(basename $YEAST_ANNOTATION) $YEAST_ANNOTATION
+wget -O $(basename $YEAST_ANNOTATION_GFF) $YEAST_ANNOTATION_GFF
+wget -O $(basename $YEAST_ANNOTATION_GTF) $YEAST_ANNOTATION_GTF
 wget -O $(basename $YEAST_ASSEMBLY)   $YEAST_ASSEMBLY
+gunzip Saccharomyces_cerevisiae.*gz
 
-gunzip Saccharomyces_cerevisiae.R64-1-1.*gz
-sed -e "s# #=#g; " Saccharomyces_cerevisiae.R64-1-1.97.gtf | \
-	sed -e 's#\="#=#g; ' | \
-	sed -e 's#";=#;#g' | \
-	sed -e 's#";#;#g' > \
-	tmpg
-
-sed -e "5r chromosome.sizes" tmpg > Saccharomyces_cerevisiae.R64-1-1.97.gff3
-\rm tmpg
-
-#rRNA coding regions were collected from 
-#
-#	https://www.yeastgenome.org/search?category=locus&feature_type=rRNA_gene&page=0&q=rRNA_gene
-#
-#and saved as rna_coding.fasta. The file is used for removing rRNA contaminants
-#from the reads using tagdust.
-
-ln -rs rna_coding.fasta Sc_grRNA.fa
+#rRNA gene sequences were were collected from Ensembl and saved as
+#file Sc_rRNA.fa (4 genes).
