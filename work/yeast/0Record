@@ -44,11 +44,17 @@ chmod a+x xcleanup_samples
 #NOTE: This will remove temporary files and archive others, greatly reducing disk
 #      space usage.
 ./xcleanup_samples
+../xsummarize_alignments
 
 #NOW:
 #
 # - you will have records of what was done in the sample directories (see err
-# and logfiles/*).
+#   and logfiles/*).
+#
+# - having run the xsummarize_alignments script should have created the
+#   tab-delimited file ProcessingAndAlignmentResults.tsv, which summarizes
+#   the numbers of reads and alignments at the various stages of processing,
+#   from initial input to final alignments used for the next workflow step
 #
 # - you should find in this directory bamfiles.tsv, which tabulates the samples
 #   and location of the generated *.bam alignment files. bamfiles.tsv can be
