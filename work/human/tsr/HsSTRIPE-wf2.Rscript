@@ -1,11 +1,9 @@
 loadWF1      <- 1
 
-# Set the samples to be analyzed. Here we have 4 samples, each of three
-#  replicates.
+# Set the samples to be analyzed. Here we have 1 sample with 3 replicates.
 #
-#datasetsToExplore <- c(1)
-datasetsToExplore <- c(1,2,3,4,5)
-datasetLabels <- c("ScSTRIPE-Set-1", "ScSTRIPE-Set-2", "ScSTRIPE-Set-3", "ScSTRIPE-Set-4", "ScSTRIPE-CombinedSet")
+datasetsToExplore <- c(1)
+datasetLabels <- c("HsSTRIPE-Set-1") 
 
 
 # TSSthreshold (the number of tags per site for the site to be considered above
@@ -21,7 +19,7 @@ datasetLabels <- c("ScSTRIPE-Set-1", "ScSTRIPE-Set-2", "ScSTRIPE-Set-3", "ScSTRI
 #  the TSSthreshold line below to replace the -1 with desired threshold (e.g.,
 #  100 to look at very strongly supported TSSs).
 #
-cTSSpfractionSET <- 0.75
+cTSSpfractionSET <- 0.65
 sTSSpfractionSET <- 0.65
 TSSthresholdSET  <- FALSE
 TSSthreshold     <- -1
@@ -38,13 +36,13 @@ library("dplyr")
 
 
 if (loadWF1) {
-  load("ScSTRIPE-wf1.RData")
+  load("HsSTRIPE-wf1.RData")
 } else {
-  source("ScSTRIPE-wf1.Rscript")
+  source("HsSTRIPE-wf1.Rscript")
 }
 debugme      <- 0
 verbose      <- 0
-cat (ScSTRIPE@title,"\tWorkflow 2\n")
+cat (HsSTRIPE@title,"\tWorkflow 2\n")
 
 
 aTSSdfList <- list()
@@ -53,15 +51,15 @@ for (datasetnbr in datasetsToExplore) {
   pdf(paste(datasetLabels[datasetnbr],"-wf2",".pdf",sep=""))
   sink(file=paste(datasetLabels[datasetnbr],"-wf2",".out",sep=""),type="output")
 
-  cat("\n\n##Exploring ScSTRIPE TSS data (using sample ",datasetnbr, " merged counts)\n\n")
+  cat("\n\n##Exploring HsSTRIPE TSS data (using sample ",datasetnbr, " merged counts)\n\n")
   if (debugme) {
-    cat("\n\nShowing the result of str(ScSTRIPE):\n\n")
-    str(ScSTRIPE)
-    cat("\n\nShowing the result of str(ScSTRIPE@tssCountDataMerged):\n\n")
-    str(ScSTRIPE@tssCountDataMerged)
+    cat("\n\nShowing the result of str(HsSTRIPE):\n\n")
+    str(HsSTRIPE)
+    cat("\n\nShowing the result of str(HsSTRIPE@tssCountDataMerged):\n\n")
+    str(HsSTRIPE@tssCountDataMerged)
   }
   
-  tmpdf <- ScSTRIPE@tssCountDataMerged[[datasetnbr]]
+  tmpdf <- HsSTRIPE@tssCountDataMerged[[datasetnbr]]
   if (debugme) {
     cat("\n\nShowing the result of str(tmpdf):\n\n")
     str(tmpdf)
@@ -69,15 +67,7 @@ for (datasetnbr in datasetsToExplore) {
     show(unique(tmpdf$seq))
   }
 
-# In case tmpdf includes read mappings to the cholorplast and mitochondrial
-#  genomes; these data points will be eliminated:
-#
   cat("\nNumber of TSSs identified by mapping:\t",
-	dim(tmpdf)[1],"\n")
-  cat("Number of TSSs called on the mitochondrial genome:\t",
-	dim(tmpdf[tmpdf$seq == "Mito",])[1],"\n")
-  tmpdf <- tmpdf[tmpdf$seq != "Mito",]
-  cat("Number of TSSs called on the nuclear genome (subject to further analyses):\t",
 	dim(tmpdf)[1],"\n")
   rownames(tmpdf) <- seq_len(nrow(tmpdf))
 
@@ -124,9 +114,9 @@ for (datasetnbr in datasetsToExplore) {
     cat("\nNumber of TSSs with counts >= ",t,"\t",length(TSScounts[TSScounts >= t]))
   }
   cat("\n\n")
-  hist(TSScounts[TSScounts >= 4 & TSScounts <=100],xlim=c(0,100),breaks=seq(0,100,1),
+  hist(TSScounts[TSScounts >= 20 & TSScounts <=100],xlim=c(0,100),breaks=seq(0,100,1),
        main=paste(datasetLabels[datasetnbr],": TSS tag count histogram",sep=""),
-       xlab=paste("TSS tag count (showing range: 4-100)")
+       xlab=paste("TSS tag count (showing range: 20-100)")
       )
 
   
@@ -340,8 +330,8 @@ for (datasetnbr in datasetsToExplore) {
 #
     plot(seq(1,150,1),sinoutfraction,ylim=c(0.1,1.0),
       main=paste(datasetLabels[datasetnbr],":\nDetermination of (good)TSS tag count threshold",sep=""),
-        xlab="TSS tag count",
-        ylab="Fraction of TSS within annotated promoters")
+  	 xlab="TSS tag count",
+  	 ylab="Fraction of TSS within annotated promoters")
       lines(seq(1,150,1),cinoutfraction,col="black",lty=1)
       lines(c(0,cTSSthreshold),c(cTSSpfraction,cTSSpfraction),col="blue",lty=2)
       lines(c(cTSSthreshold,cTSSthreshold),c(0,cTSSpfraction),col="blue",lty=2)
@@ -580,7 +570,7 @@ if (debugme) {
   par(mfrow=c(1,1),oma=c(0,0,0,0))
   m <- multhist(list(dtssI,dtssO),breaks=seq(4.5,60.5,1),freq=FALSE,ylim=c(0,0.20),
         main=paste(datasetLabels[datasetnbr],": (good)TSS nearest neighbor distances\nwithin/outside annotated promoter regions",sep=""),
-        xlab="Nearest neighbor distances (between 5 and 60)",cex.names=0.7)
+  	xlab="Nearest neighbor distances (between 5 and 60)",cex.names=0.7)
 
 
 ###The same for the weak TSSs:
@@ -759,8 +749,8 @@ if (debugme) {
 #
   par(mfrow=c(1,1),oma=c(0,0,0,0))
   m <- multhist(list(dtssI,dtssO),breaks=seq(4.5,60.5,1),freq=FALSE,ylim=c(0,0.20),
-  	main=paste(datasetLabels[datasetnbr],":\n(weak)TSS nearest neighbor distances\nwithin/outside annotated promoter regions",sep=""),
-  	xlab="Nearest neighbor distances (between 5 and 60)",cex.names=0.7)
+        main=paste(datasetLabels[datasetnbr],":\n(weak)TSS nearest neighbor distances\nwithin/outside annotated promoter regions",sep=""),
+        xlab="Nearest neighbor distances (between 5 and 60)",cex.names=0.7)
 
 
 # Time to explore TSRs. The TSS distance plots suggest closer clustering of TSSs in known promoter
@@ -776,9 +766,9 @@ if (debugme) {
   minD <- 10
   maxD <- 40
   for (n in seq(minD,maxD,by=5)) {
-    ScSTRIPE <- determineTSR(experimentName=ScSTRIPE, n.cores=1, tssSetType="replicates", tssSet="1",
+    HsSTRIPE <- determineTSR(experimentName=HsSTRIPE, n.cores=1, tssSetType="replicates", tssSet="1",
   			tagCountThreshold=TSSthreshold, clustDist=n, writeTable=FALSE)
-    tsrD   <- ScSTRIPE@tsrData[[1]]
+    tsrD   <- HsSTRIPE@tsrData[[1]]
     i        <- n-minD+1
     nTSR[i]  <- dim(tsrD)[1]
     mTSRw[i] <- median(as.numeric(tsrD$tsrWdth))
@@ -794,10 +784,10 @@ if (debugme) {
 #Let's look at clustDist 20,30,40 in more detail:
 #
   cat("\n\nDetails for select values of the clustDist parameter:\n")
-  ScSTRIPE <- determineTSR(experimentName=ScSTRIPE, n.cores=1, tssSetType="replicates", tssSet="1",
+  HsSTRIPE <- determineTSR(experimentName=HsSTRIPE, n.cores=1, tssSetType="replicates", tssSet="1",
   			tagCountThreshold=TSSthreshold, clustDist=20, writeTable=FALSE)
-  w      <- as.numeric(ScSTRIPE@tsrData[[1]]$tsrWdth)
-  c      <- as.numeric(ScSTRIPE@tsrData[[1]]$nTAGs)
+  w      <- as.numeric(HsSTRIPE@tsrData[[1]]$tsrWdth)
+  c      <- as.numeric(HsSTRIPE@tsrData[[1]]$nTAGs)
   cat("\n\nclustDist = 20:\n")
   cat("\nNumber of TSRs:\t",length(w))
   cat("\nNumber of TSRs of width 1:\t",length(w[w==1]))
@@ -814,10 +804,10 @@ if (debugme) {
        xlab="TSScount (<= 200)"
       )
 
-  ScSTRIPE <- determineTSR(experimentName=ScSTRIPE, n.cores=1, tssSetType="replicates", tssSet="1",
+  HsSTRIPE <- determineTSR(experimentName=HsSTRIPE, n.cores=1, tssSetType="replicates", tssSet="1",
   			tagCountThreshold=TSSthreshold, clustDist=30, writeTable=FALSE)
-  w      <- as.numeric(ScSTRIPE@tsrData[[1]]$tsrWdth)
-  c      <- as.numeric(ScSTRIPE@tsrData[[1]]$nTAGs)
+  w      <- as.numeric(HsSTRIPE@tsrData[[1]]$tsrWdth)
+  c      <- as.numeric(HsSTRIPE@tsrData[[1]]$nTAGs)
   cat("\n\nclustDist = 30:\n")
   cat("\nNumber of TSRs:\t",length(w))
   cat("\nNumber of TSRs of width 1:\t",length(w[w==1]))
@@ -834,10 +824,10 @@ if (debugme) {
        xlab="TSScount (<= 200)"
       )
 
-  ScSTRIPE <- determineTSR(experimentName=ScSTRIPE, n.cores=1, tssSetType="replicates", tssSet="1",
+  HsSTRIPE <- determineTSR(experimentName=HsSTRIPE, n.cores=1, tssSetType="replicates", tssSet="1",
   			tagCountThreshold=TSSthreshold, clustDist=40, writeTable=FALSE)
-  w      <- as.numeric(ScSTRIPE@tsrData[[1]]$tsrWdth)
-  c      <- as.numeric(ScSTRIPE@tsrData[[1]]$nTAGs)
+  w      <- as.numeric(HsSTRIPE@tsrData[[1]]$tsrWdth)
+  c      <- as.numeric(HsSTRIPE@tsrData[[1]]$nTAGs)
   cat("\n\nclustDist = 40:\n")
   cat("\nNumber of TSRs:\t",length(w))
   cat("\nNumber of TSRs of width 1:\t",length(w[w==1]))
@@ -850,7 +840,7 @@ if (debugme) {
   cat("\nQuantiles of TSS tag counts per TSR:\n")
   show(quantile(c,seq(0,100,2)/100))
   hist(c[c<=200],xlim=c(0,200),breaks=seq(0,200,1),freq=TRUE,right=FALSE,
-       main=paste(datasetLabels[datasetnbr],":\nHistogram of TSS tag counts per TSR for clustDist=40",seo=""),
+       main=paste(datasetLabels[datasetnbr],":\nHistogram of TSS tag counts per TSR for clustDist=40",sep=""),
        xlab="TSScount (<= 200)"
       )
 
@@ -858,4 +848,4 @@ if (debugme) {
 } # ... end for datasetnbr in datasetsToExplore
 
 # ... save the data generated by the above for future reloading with the R load command:
-save.image(file="ScSTRIPE-wf2.RData")
+save.image(file="HsSTRIPE-wf2.RData")
