@@ -1,0 +1,49 @@
+loadWF3      <- 1
+
+
+# Start the fun ...: 
+#
+library("TSRchitect")
+library("dplyr")
+
+sink(file=paste("ScSTRIPE","-wf4",".out",sep=""),type="output")
+
+
+if (loadWF3) {
+  load("ScSTRIPE-wf3.RData")
+} else {
+  source("ScSTRIPE-wf3.Rscript")
+}
+cat (ScSTRIPE@title,"\tWorkflow 4\n")
+
+
+#Fine analyses:
+#
+cat("\n\n##Exploring particular genes:\n")
+options(width=1024)
+
+genesOfInterest <- c("gene:YBL072C","gene:YER102W","gene:YEL009C","gene:YBL003C")
+datasetsToExplore <- c(1,2,3,4)
+
+
+for (mygene in genesOfInterest) {
+  cat("\n\nShowing data for gene:\t",mygene,"\n\n")
+  
+  cat("Entry in GRanges object 'genes':\n")
+  show(genes[genes$ID == mygene,])
+  
+  cat("\n\nTSRs for the combined samples in the gene promoter region:\n")
+  tsr <- ScSTRIPE@tsrDataMerged[[5]]
+  show(BiocGenerics::subset(tsr, tsr$featureID == mygene))
+  for (datasetnbr in datasetsToExplore) {
+    cat("\n\nTSRs for sample ",datasetnbr," in the gene promoter region:\n")
+    tsr <- ScSTRIPE@tsrDataMerged[[datasetnbr]]
+    show(BiocGenerics::subset(tsr, tsr$featureID == mygene))
+  }
+  
+  for (datasetnbr in datasetsToExplore) {
+    cat("\n\nSample ",datasetnbr," TSSs in the gene promoter region as annotated in 'aTSSdf':\n")
+    mytssdf <- BiocGenerics::subset(aTSSdfList[[datasetnbr]], featureID == mygene)
+    print(as_tibble(mytssdf,ncol=14,width=Inf), n=Inf)
+  }
+}
