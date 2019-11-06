@@ -1,11 +1,12 @@
 loadWF1      <- 1
 
 # Set the samples to be analyzed. Here we have 4 samples, each of three
-#  replicates.
+#  replicates, and we are analyzing each replicate separately.
 #
-#datasetsToExplore <- c(1)
-datasetsToExplore <- c(1,2,3,4,5)
-datasetLabels <- c("ScSTRIPE-Set-1", "ScSTRIPE-Set-2", "ScSTRIPE-Set-3", "ScSTRIPE-Set-4", "ScSTRIPE-CombinedSet")
+datasetsToExplore <- c(1,2,3,4,5,6,7,8,9,10,11,12)
+datasetLabels <- c("ScSTRIPE-Set-1", "ScSTRIPE-Set-2", "ScSTRIPE-Set-3", "ScSTRIPE-Set-4",
+                   "ScSTRIPE-Set-5", "ScSTRIPE-Set-6", "ScSTRIPE-Set-7", "ScSTRIPE-Set-8",
+                   "ScSTRIPE-Set-9", "ScSTRIPE-Set-10", "ScSTRIPE-Set-11", "ScSTRIPE-Set-12")
 
 
 # TSSthreshold (the number of tags per site for the site to be considered above
@@ -53,15 +54,15 @@ for (datasetnbr in datasetsToExplore) {
   pdf(paste(datasetLabels[datasetnbr],"-wf2",".pdf",sep=""))
   sink(file=paste(datasetLabels[datasetnbr],"-wf2",".out",sep=""),type="output")
 
-  cat("\n\n##Exploring ScSTRIPE TSS data (using sample ",datasetnbr, " merged counts)\n\n")
+  cat("\n\n#Exploring ScSTRIPE TSS data (using sample ",datasetnbr, " )\n\n")
   if (debugme) {
     cat("\n\nShowing the result of str(ScSTRIPE):\n\n")
     str(ScSTRIPE)
-    cat("\n\nShowing the result of str(ScSTRIPE@tssCountDataMerged):\n\n")
-    str(ScSTRIPE@tssCountDataMerged)
+    cat("\n\nShowing the result of str(ScSTRIPE@tssCountData):\n\n")
+    str(ScSTRIPE@tssCountData)
   }
   
-  tmpdf <- ScSTRIPE@tssCountDataMerged[[datasetnbr]]
+  tmpdf <- ScSTRIPE@tssCountData[[datasetnbr]]
   if (debugme) {
     cat("\n\nShowing the result of str(tmpdf):\n\n")
     str(tmpdf)
@@ -312,17 +313,17 @@ for (datasetnbr in datasetsToExplore) {
 #  puts at least 100*TSSpfraction % of TSSs into known promoter regions:
 #
     cTSSpfraction <- cTSSpfractionSET
-    cpf <- approx(x=cinoutfraction[],y=seq(1,150,1),xout=cTSSpfraction,tie=min)
+    cpf <- approx(x=cinoutfraction[1:50],y=seq(1,50,1),xout=cTSSpfraction,tie=min)
     while (is.na(cpf$y)) {	# lowering the fraction if the original target is inaccessible
       cTSSpfraction <- cTSSpfraction - 0.01
-      cpf <- approx(x=cinoutfraction[],y=seq(1,150,1),xout=cTSSpfraction,tie=min)
+      cpf <- approx(x=cinoutfraction[1:50],y=seq(1,50,1),xout=cTSSpfraction,tie=min)
     }
     TSSthreshold <- ceiling(cpf$y)
     sTSSpfraction <- sTSSpfractionSET
-    spf <- approx(x=sinoutfraction[],y=seq(1,150,1),xout=sTSSpfraction,tie=min)
+    spf <- approx(x=sinoutfraction[1:50],y=seq(1,50,1),xout=sTSSpfraction,tie=min)
     while (is.na(spf$y)) {	# lowering the fraction if the original target is inaccessible
       sTSSpfraction <- sTSSpfraction - 0.01
-      spf <- approx(x=sinoutfraction[],y=seq(1,150,1),xout=sTSSpfraction,tie=min)
+      spf <- approx(x=sinoutfraction[1:50],y=seq(1,50,1),xout=sTSSpfraction,tie=min)
     }
 
 #... but going a bit higher because we want the lowest above threshold tag count
@@ -583,8 +584,8 @@ if (debugme) {
         xlab="Nearest neighbor distances (between 5 and 60)",cex.names=0.7)
 
 
-###The same for the weak TSSs:
-
+# Doing the same for the weak TSSs:
+#
   cat("\n\n\nUsing a threshold of ",TSSthreshold," tag counts for 'weak' TSS determination:\n\n")
   TSSdfWeak <- TSSdf[TSSdf$score < TSSthreshold,]
 
@@ -776,9 +777,10 @@ if (debugme) {
   minD <- 10
   maxD <- 40
   for (n in seq(minD,maxD,by=5)) {
-    ScSTRIPE <- determineTSR(experimentName=ScSTRIPE, n.cores=1, tssSetType="replicates", tssSet="1",
-  			tagCountThreshold=TSSthreshold, clustDist=n, writeTable=FALSE)
-    tsrD   <- ScSTRIPE@tsrData[[1]]
+    ScSTRIPE <- determineTSR(experimentName=ScSTRIPE, n.cores=1, tssSetType="replicates",
+			tssSet=as.character(datasetnbr), tagCountThreshold=TSSthreshold,
+			clustDist=n, writeTable=FALSE)
+    tsrD   <- ScSTRIPE@tsrData[[datasetnbr]]
     i        <- n-minD+1
     nTSR[i]  <- dim(tsrD)[1]
     mTSRw[i] <- median(as.numeric(tsrD$tsrWdth))
@@ -794,10 +796,11 @@ if (debugme) {
 #Let's look at clustDist 20,30,40 in more detail:
 #
   cat("\n\nDetails for select values of the clustDist parameter:\n")
-  ScSTRIPE <- determineTSR(experimentName=ScSTRIPE, n.cores=1, tssSetType="replicates", tssSet="1",
-  			tagCountThreshold=TSSthreshold, clustDist=20, writeTable=FALSE)
-  w      <- as.numeric(ScSTRIPE@tsrData[[1]]$tsrWdth)
-  c      <- as.numeric(ScSTRIPE@tsrData[[1]]$nTAGs)
+  ScSTRIPE <- determineTSR(experimentName=ScSTRIPE, n.cores=1, tssSetType="replicates",
+			tssSet=as.character(datasetnbr), tagCountThreshold=TSSthreshold,
+			clustDist=20, writeTable=FALSE)
+  w      <- as.numeric(ScSTRIPE@tsrData[[datasetnbr]]$tsrWdth)
+  c      <- as.numeric(ScSTRIPE@tsrData[[datasetnbr]]$nTAGs)
   cat("\n\nclustDist = 20:\n")
   cat("\nNumber of TSRs:\t",length(w))
   cat("\nNumber of TSRs of width 1:\t",length(w[w==1]))
@@ -814,10 +817,11 @@ if (debugme) {
        xlab="TSScount (<= 200)"
       )
 
-  ScSTRIPE <- determineTSR(experimentName=ScSTRIPE, n.cores=1, tssSetType="replicates", tssSet="1",
-  			tagCountThreshold=TSSthreshold, clustDist=30, writeTable=FALSE)
-  w      <- as.numeric(ScSTRIPE@tsrData[[1]]$tsrWdth)
-  c      <- as.numeric(ScSTRIPE@tsrData[[1]]$nTAGs)
+  ScSTRIPE <- determineTSR(experimentName=ScSTRIPE, n.cores=1, tssSetType="replicates",
+			tssSet=as.character(datasetnbr), tagCountThreshold=TSSthreshold,
+			clustDist=30, writeTable=FALSE)
+  w      <- as.numeric(ScSTRIPE@tsrData[[datasetnbr]]$tsrWdth)
+  c      <- as.numeric(ScSTRIPE@tsrData[[datasetnbr]]$nTAGs)
   cat("\n\nclustDist = 30:\n")
   cat("\nNumber of TSRs:\t",length(w))
   cat("\nNumber of TSRs of width 1:\t",length(w[w==1]))
@@ -834,10 +838,11 @@ if (debugme) {
        xlab="TSScount (<= 200)"
       )
 
-  ScSTRIPE <- determineTSR(experimentName=ScSTRIPE, n.cores=1, tssSetType="replicates", tssSet="1",
-  			tagCountThreshold=TSSthreshold, clustDist=40, writeTable=FALSE)
-  w      <- as.numeric(ScSTRIPE@tsrData[[1]]$tsrWdth)
-  c      <- as.numeric(ScSTRIPE@tsrData[[1]]$nTAGs)
+  ScSTRIPE <- determineTSR(experimentName=ScSTRIPE, n.cores=1, tssSetType="replicates",
+			tssSet=as.character(datasetnbr), tagCountThreshold=TSSthreshold,
+			clustDist=40, writeTable=FALSE)
+  w      <- as.numeric(ScSTRIPE@tsrData[[datasetnbr]]$tsrWdth)
+  c      <- as.numeric(ScSTRIPE@tsrData[[datasetnbr]]$nTAGs)
   cat("\n\nclustDist = 40:\n")
   cat("\nNumber of TSRs:\t",length(w))
   cat("\nNumber of TSRs of width 1:\t",length(w[w==1]))
