@@ -70,8 +70,8 @@ for (datasetnbr in datasetsToExplore) {
     show(unique(tmpdf$seq))
   }
 
-# In case tmpdf includes read mappings to the cholorplast and mitochondrial
-#  genomes; these data points will be eliminated:
+# In case tmpdf includes read mappings to the mitochondrial genome,
+# these data points will be eliminated:
 #
   cat("\nNumber of TSSs identified by mapping:\t",
 	dim(tmpdf)[1],"\n")
@@ -760,8 +760,8 @@ if (debugme) {
 #
   par(mfrow=c(1,1),oma=c(0,0,0,0))
   m <- multhist(list(dtssI,dtssO),breaks=seq(4.5,60.5,1),freq=FALSE,ylim=c(0,0.20),
-  	main=paste(datasetLabels[datasetnbr],":\n(weak)TSS nearest neighbor distances\nwithin/outside annotated promoter regions",sep=""),
-  	xlab="Nearest neighbor distances (between 5 and 60)",cex.names=0.7)
+        main=paste(datasetLabels[datasetnbr],":\n(weak)TSS nearest neighbor distances\nwithin/outside annotated promoter regions",sep=""),
+        xlab="Nearest neighbor distances (between 5 and 60)",cex.names=0.7)
 
 
 # Time to explore TSRs. The TSS distance plots suggest closer clustering of TSSs in known promoter
@@ -855,7 +855,7 @@ if (debugme) {
   cat("\nQuantiles of TSS tag counts per TSR:\n")
   show(quantile(c,seq(0,100,2)/100))
   hist(c[c<=200],xlim=c(0,200),breaks=seq(0,200,1),freq=TRUE,right=FALSE,
-       main=paste(datasetLabels[datasetnbr],":\nHistogram of TSS tag counts per TSR for clustDist=40",seo=""),
+       main=paste(datasetLabels[datasetnbr],":\nHistogram of TSS tag counts per TSR for clustDist=40",sep=""),
        xlab="TSScount (<= 200)"
       )
 

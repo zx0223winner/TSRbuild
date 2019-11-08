@@ -11,7 +11,6 @@ if (loadWF2) {
 } else {
   source("ScSTRIPE-wf2.Rscript")
 }
-#cat (ScSTRIPE@title,"\tWorkflow 3\n")
 
 
 #We'll use the TSSthreshold derived in workflow ScSTRIPE-wf2.Rscript and clustDist=40 from here on.
@@ -35,7 +34,7 @@ ScSTRIPE <- mergeSampleData(experimentName=ScSTRIPE, n.cores=6, tagCountThreshol
 
 # ... we should use a higher threshold when combining all the experiments:
 TSSthreshold    <- 12
-ScSTRIPE <- determineTSR(experimentName=ScSTRIPE, n.cores=6, tssSetType="merged",     tssSet="13", tagCountThreshold=TSSthreshold, clustDist=useClustDist, writeTable=FALSE)
+ScSTRIPE <- determineTSR(experimentName=ScSTRIPE, n.cores=1, tssSetType="merged", tssSet="13", tagCountThreshold=TSSthreshold, clustDist=useClustDist, writeTable=FALSE)
 
 # ... now adding per sample tag counts and annotation to the combined data set:
 
