@@ -1,3 +1,21 @@
+#For the impatient or expert user:
+#
+# You could run the entire workflow by running the following scripts in
+# succession:
+#
+# 	./xpreparatory
+# 	./xwork
+# 	./xcleanup
+# 	./xdettsr
+#
+# (in fact, you could run all the above in one script, provided you have
+#  the appropriate definition of $rws as an environmental variable; see
+#  message at the end of the xpreparatory script).
+#
+# More prudent and educational might to be read on below, where we have
+# annotated the workflow steps.
+
+
 #We need to get the genome files set up before we can do anything else:
 #
 cd ScGENOME
@@ -25,7 +43,7 @@ chmod a+x xsetup_samples
 #Ok, one more absolutely necessary preparatory step:
 #
 echo "We must set the rws variable again, as we have moved the gostripes.simg images."
-echo "Execute the following (or equivalent):"
+echo "Execute the following (or equivalent) in your working shell:"
 echo ""
 echo "source ../GoSTRIPES/bin/xworkStripes -b `pwd` -i `pwd`/../gostripes.simg" 
 echo ""
@@ -41,8 +59,10 @@ chmod a+x xrun_samples
 #
 sed -e "s#EXPERIMENT=demo#EXPERIMENT=GSF2268#; " ../GoSTRIPES/templates/xcleanup_samples >  xcleanup_samples
 chmod a+x xcleanup_samples
-#NOTE: This will remove temporary files and archive others, greatly reducing disk
-#      space usage.
+#
+#NOTE: This will remove temporary files and archive others, greatly reducing
+#      disk space usage.
+#
 ./xcleanup_samples
 ../xsummarize_alignments
 

@@ -16,7 +16,7 @@ locally, or you can download our TSRchitect singularity container and run the
 xrunwfHs script as follows:
 
 	singularity pull --name tsr.simg shub://BrendelGroup/TSRchitect
-	singularity exec -e -B `pwd` tsr.simg ./xrunwfHs all
+	singularity exec -e -B ../ tsr.simg ./xrunwfHs all
 
 Once you have the output of the Rscripts, you may want to inspect the output
 data for obvious characteristics: how many TSRs have been predicted, how do they
