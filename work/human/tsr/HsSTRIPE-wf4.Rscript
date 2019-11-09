@@ -33,7 +33,7 @@ for (mygene in genesOfInterest) {
   show(genes[genes$ID == mygene,])
   
   cat("\n\nTSRs for the combined samples in the gene promoter region:\n")
-  tsr <- HsSTRIPE@tsrDataMerged[[4]]
+  tsr <- HsSTRIPE@tsrDataMerged[[1]]
   show(BiocGenerics::subset(tsr, tsr$featureID == mygene))
   for (datasetnbr in datasetsToExplore) {
     cat("\n\nTSRs for sample ",datasetnbr," in the gene promoter region:\n")
