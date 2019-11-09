@@ -29,7 +29,7 @@ datasetsToExplore <- c(1,2,3)
 for (datasetnbr in datasetsToExplore) {
   HsSTRIPE <- addAnnotationToTSR(experimentName=HsSTRIPE, tsrSetType="replicates", datasetnbr, upstreamDist=pupstream, downstreamDist=pdownstream, feature="mRNA", featureColumn="ID", writeTable=TRUE)
 }
-# ... merging the replicate data::
+# ... merging the replicate data:
 HsSTRIPE <- mergeSampleData(experimentName=HsSTRIPE, n.cores=1, tagCountThreshold=TSSthreshold)
 
 # ... we should use a higher threshold when combining all the experiments:

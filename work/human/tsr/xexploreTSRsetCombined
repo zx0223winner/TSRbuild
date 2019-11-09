@@ -88,7 +88,7 @@ cat tmp_$1_header tmp_$1_tmp_$1_strong_prm > tmp_$1_strong_prm
 
 cut -f11 tmp_$1_strong_prm | egrep "transcript:" | sort -u > tmp_$1_strong_mRNA_lst
 sed -e "s#\(.*\)#egrep \"	ID=\1;\" $GFF3FILE#" tmp_$1_strong_mRNA_lst | bash | egrep "	mRNA	" > tmp_$1_strong_mRNAs
-sed -e "s#\(.*\)#egrep \"	ID=\1;\" $GFF3FILE#" tmp_$1_strong_mRNA_lst | bash | egrep "	mRNA	" | cut -d";" -f2 | cut -d"=" -f2 > tmp_$1_strong_gene_lst
+sed -e "s#\(.*\)#egrep \"	ID=\1;\" $GFF3FILE#" tmp_$1_strong_mRNA_lst | bash | egrep "	mRNA	" | cut -d";" -f2 | cut -d"=" -f2 | sort -u > tmp_$1_strong_gene_lst
 sed -e "s#\(.*\)#egrep \"	ID=\1;\" $GFF3FILE#" tmp_$1_strong_gene_lst | bash | egrep "	gene	" > tmp_$1_strong_genes
 m=`tail -n +2 tmp_$1_strong_prm | wc -l`
 echo "Number of 'strong' promoters (TSRs with > $minthreshold tag counts in all 3 samples): $m"
