@@ -16,4 +16,15 @@ locally, or you can download our TSRchitect singularity container and run the
 xrunwfHs script as follows:
 
 	singularity pull --name tsr.simg shub://BrendelGroup/TSRchitect
-	singularity exec -e -B `pwd` tsr.simg ./xrunwfHs all
+	singularity exec -e -B ../ tsr.simg ./xrunwfHs all
+
+Once you have the output of the Rscripts, you may want to inspect the output
+data for obvious characteristics: how many TSRs have been predicted, how do they
+match up with current gene annotation, what the genes with strong promoter
+usage, etc.. We provide the xexploreTSRset* scripts as templates for what can be
+done easily without indepth analyis - try it, change it, do the indepth
+analyses ...
+
+Usage examples:
+	xexploreTSRset TSRset-1.txt > explore-1.out
+	xexploreTSRsetCombined TSRsetCombined.txt > explore-C.out

@@ -3,7 +3,7 @@ debugme      <- 0
 # pupstream/pdownstream define the "promoter" regions as specified below.
 #
 pupstream    <- 250
-pdownstream  <- 300
+pdownstream  <- 100
 
 
 
@@ -24,10 +24,7 @@ cat (ScSTRIPE@title,"\tWorkflow 1\n")
 ScSTRIPE <- inputToTSS(ScSTRIPE)
 
 # ... constructing the tag count per TSS data matrices:
-ScSTRIPE <- processTSS(experimentName=ScSTRIPE, n.cores=4, tssSet="all", writeTable=TRUE)
-
-#... merging the replicate data
-ScSTRIPE <- mergeSampleData(experimentName=ScSTRIPE,n.cores=4,tagCountThreshold=1)
+ScSTRIPE <- processTSS(experimentName=ScSTRIPE, n.cores=6, tssSet="all", writeTable=TRUE)
 
 # ... now adding annotation:
 #

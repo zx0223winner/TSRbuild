@@ -1,0 +1,104 @@
+#!/bin/bash
+#
+
+#The script should be run with arguments:	<TSRsetFile>
+#
+egrep -v "Mito" $1 > tmp_$1_nuclear_tsr.txt
+
+inputfile=tmp_$1_nuclear_tsr.txt
+GFF3FILE=../ScGENOME/*gff3
+
+#Fields in the yeast (annotated) TSRsetCombined.txt file:
+#
+# 1-4	seq, start, end strand
+# 5-6	nTSSs, nTAGs
+# 7-11	tsrPeak, tsrWdth, tsrTrq, tsrSI, tsrMSI
+# 12-35	nTAGs per sample (even numbers) followed by normalized counts (odd numbers) for all 12 samples
+# 36	featureID
+
+
+#Number of TSRs associated with nuclear protein_coding gene annotations:
+#
+m=`cut -f36 $inputfile | egrep -v "^featureID|^NA" | wc -l`
+
+#Number of TSRs not associated with nuclear protein_coding gene annotations:
+#
+n=`cut -f36 $inputfile | sort  | egrep "^NA" | wc -l`
+
+#Check:
+#
+c=`tail -n+2 $inputfile | wc -l`
+
+echo "Number of TSRs     associated with nuclear protein_coding gene annotations:	 $m"
+echo "Number of TSRs not associated with nuclear protein_coding gene annotations:	 $n"
+echo "Check: wc -l on 'inputfile' minus 1 (header)                              :	$c"
+echo ""
+
+
+#Number of nuclear protein_coding gene annotations:
+#
+egrep -v "^Mito" $GFF3FILE | cut -f9- | egrep "biotype=protein_coding" | egrep "^ID=gene:" | cut -d";" -f1 | cut -d"=" -f2 | sort -u > tmp_$1_all_pcd_nuclear_genes
+m=`cat tmp_$1_all_pcd_nuclear_genes | wc -l`
+echo "Number of nuclear protein_coding gene annotations                                 :	$m"
+
+
+#Number of _nuclear_ protein_coding gene annotations associated with at least one TSR:
+#
+m=`cut -f36 $inputfile | sort -u | egrep -v "^featureID|^NA" | wc -l`
+echo "Number of nuclear protein_coding gene annotations associated with at least one TSR:	 $m"
+
+cut -f36 $inputfile | sort -u | egrep -v "^featureID|^NA" > tmp_$1_tsr_pcd_nuclear_genes
+diff tmp_$1_all_pcd_nuclear_genes tmp_$1_tsr_pcd_nuclear_genes | egrep "^<" | cut -c3- > tmp_$1_noTSR_pcd_nuclear_genes
+n=`cat tmp_$1_noTSR_pcd_nuclear_genes | wc -l`
+echo "Number of nuclear protein_coding gene annotations not associated with any TSR     :	 $n"
+
+
+#Genes associated with multiple TSRs:
+#
+sed -e "s/\(.*\)/awk -v locus=\1 '\$0 ~ locus {tsr[\$36] += 1}; END { for (k in tsr) print k \"\\\t\" tsr[k] }' $inputfile/" tmp_$1_tsr_pcd_nuclear_genes | bash | sort -k2,2 -nr > tmp_$1_pcd_nuclear_geneNBRtsr
+awk '$2 == 2 { print }' tmp_$1_pcd_nuclear_geneNBRtsr > tmp_$1_pcd_nuclear_gene_2TSR
+m=`cat tmp_$1_pcd_nuclear_gene_2TSR | wc -l`
+echo "Number of nuclear protein_coding gene annotations associated with exactly   2 TSRs:	 $m	(file: tmp_$1_pcd_nuclear_gene_2TSR)"
+awk '$2 == 3 { print }' tmp_$1_pcd_nuclear_geneNBRtsr > tmp_$1_pcd_nuclear_gene_3TSR
+m=`cat tmp_$1_pcd_nuclear_gene_3TSR | wc -l`
+echo "Number of nuclear protein_coding gene annotations associated with exactly   3 TSRs:	 $m	(file: tmp_$1_pcd_nuclear_gene_3TSR)"
+awk '$2 > 3 { print }' tmp_$1_pcd_nuclear_geneNBRtsr > tmp_$1_pcd_nuclear_gene_4TSR
+m=`cat tmp_$1_pcd_nuclear_gene_4TSR | wc -l`
+echo "Number of nuclear protein_coding gene annotations associated with more than 3 TSRs:	 $m	(file: tmp_$1_pcd_nuclear_gene_4TSR)"
+echo ""
+
+
+
+#Pulling out a table of raw counts per sample:
+#
+cut -f1-6,8,12,14,16,18,20,22,24,26,28,30,32,34,36 TSRsetCombined.txt > tmp_$1_raw_counts
+
+minthreshold=500
+maxthreshold=100
+
+#Pulling out a table of normalized counts per sample:
+#
+cut -f1-6,8,13,15,17,19,21,23,25,27,29,31,33,35,36 TSRsetCombined.txt > tmp_$1_normalized_counts
+head -1 tmp_$1_normalized_counts > tmp_$1_header
+
+tail -n +2 tmp_$1_normalized_counts | awk -v minthreshold=$minthreshold '$8 > minthreshold && $9 > minthreshold && $10 > minthreshold && $11 > minthreshold && $12 > minthreshold && $13 > minthreshold && $14 > minthreshold && $15 > minthreshold && $16 > minthreshold && $17 > minthreshold && $18 > minthreshold && $19 > minthreshold { print }' > tmp_$1_tmp_$1_constitutive_prm
+cat tmp_$1_header tmp_$1_tmp_$1_constitutive_prm > tmp_$1_constitutive_prm
+\rm tmp_$1_tmp_$1_constitutive_prm
+cut -f20 tmp_$1_constitutive_prm | egrep "gene:" | sort -u > tmp_$1_constitutive_lst
+sed -e "s#\(.*\)#egrep \"	ID=\1;\" $GFF3FILE#" tmp_$1_constitutive_lst | bash | egrep "	gene	" > tmp_$1_constitutive_genes
+m=`tail -n +2 tmp_$1_constitutive_prm | wc -l`
+echo "Number of 'constitutive' promoters (TSRs with > $minthreshold tag counts in all 12 samples): $m"
+n=`cat tmp_$1_constitutive_lst | wc -l`
+echo " List of associated genes        :	tmp_$1_constitutive_lst ($n genes)"
+echo " Description  of associated genes:	tmp_$1_constitutive_genes"
+
+tail -n +2 tmp_$1_normalized_counts | awk -v maxthreshold=$maxthreshold -v minthreshold=$minthreshold '$8 < maxthreshold && $9 < maxthreshold && $10 < maxthreshold && $11 < maxthreshold && $12 < maxthreshold && $13 < maxthreshold && $14 < maxthreshold && $15 < maxthreshold && $16 < maxthreshold && $17 > minthreshold && $18 > minthreshold && $19 > minthreshold { print }' > tmp_$1_tmp_$1_differential_prm
+cat tmp_$1_header tmp_$1_tmp_$1_differential_prm > tmp_$1_differential_prm
+\rm tmp_$1_tmp_$1_differential_prm
+cut -f20 tmp_$1_differential_prm | egrep "gene:" | sort -u > tmp_$1_differential_lst
+sed -e "s#\(.*\)#egrep \"	ID=\1;\" $GFF3FILE#" tmp_$1_differential_lst | bash | egrep "	gene	" > tmp_$1_differential_genes
+m=`tail -n +2 tmp_$1_differential_prm | wc -l`
+echo "Number of 'differential' promoters (TSRs with < $maxthreshold tag counts in all 9 control samples AND > $minthreshold tag counts in all 3 diamide samples): $m"
+n=`cat tmp_$1_differential_lst | wc -l`
+echo " List of associated genes        :	tmp_$1_differential_lst ($n genes)"
+echo " Description  of associated genes:	tmp_$1_differential_genes"

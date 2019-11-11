@@ -19,11 +19,11 @@ cat (ScSTRIPE@title,"\tWorkflow 4\n")
 
 #Fine analyses:
 #
-cat("\n\n##Exploring particular genes:\n")
+cat("\n\n# Exploring particular genes:\n")
 options(width=1024)
 
 genesOfInterest <- c("gene:YBL072C","gene:YER102W","gene:YEL009C","gene:YBL003C")
-datasetsToExplore <- c(1,2,3,4)
+datasetsToExplore <- c(1,2,3,4,5,6,7,8,9,10,11,12)
 
 
 for (mygene in genesOfInterest) {
@@ -33,11 +33,11 @@ for (mygene in genesOfInterest) {
   show(genes[genes$ID == mygene,])
   
   cat("\n\nTSRs for the combined samples in the gene promoter region:\n")
-  tsr <- ScSTRIPE@tsrDataMerged[[5]]
+  tsr <- ScSTRIPE@tsrDataMerged[[13]]
   show(BiocGenerics::subset(tsr, tsr$featureID == mygene))
   for (datasetnbr in datasetsToExplore) {
     cat("\n\nTSRs for sample ",datasetnbr," in the gene promoter region:\n")
-    tsr <- ScSTRIPE@tsrDataMerged[[datasetnbr]]
+    tsr <- ScSTRIPE@tsrData[[datasetnbr]]
     show(BiocGenerics::subset(tsr, tsr$featureID == mygene))
   }
   
