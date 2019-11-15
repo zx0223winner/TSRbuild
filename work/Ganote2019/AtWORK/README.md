@@ -29,7 +29,7 @@ NOTE: You should definitely take a look at the scripts and configuration files
       to customize the workflow for your computing environment and needs. For
       example, AtPEAT/AtPEAT.configfile specifies
 
-      THREADS=8
+	THREADS=8
 
 which you should change to the number of processors you wish to use.
 
