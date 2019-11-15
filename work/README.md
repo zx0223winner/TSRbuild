@@ -21,21 +21,19 @@ the steps (in order):
 
 Here we walk you through the data work described in our publications:
 
+*Policastro2019*
 Robert A. Policastro, R. Taylor Raborn, Volker P. Brendel, and Gabriel E. Zentner
 (2019) _Simple and efficient mapping of transcription start sites with STRIPE-seq._
 To be submitted.
 
+*Ganote2019*
+Ganote, C. & Brendel, V.P
+(2019) _Identification and characterization of plant promoters._
+The Plant Cell, to be submitted
+
+*TSRexploreR*
 Robert A. Policastro _et al._
-(2019) TSRexplore: _A tool set for evaluation and characterization of transcription start regions in eukaryotic genomes._
+(2019) TSRexploreR: _A tool set for evaluation and characterization of transcription start regions in eukaryotic genomes._
 In preparation.
 
-Give yourself a clean working directory on a nice Linux machine (10 cores,
-100GB RAM, 300GB disk space recommended) and follow the instructions, starting
-with
-
-```bash
-./xgetstarted1
-```
-
-All the files and the directory structure in the _work_ directory that contains
-this _README_ file are necessary.
+Please see instructions on how to proceed in the named subdirectories.

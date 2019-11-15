@@ -1,0 +1,54 @@
+#!/bin/bash
+
+#Setting variables:
+#
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source ${DIR}/AtOligo.configfile
+
+#No further edits necessary from here on ...
+#
+
+
+#Dumping the fastq data to directory fastq:
+#
+mkdir fastq
+cd fastq
+${SRATOOLKIT}/fastq-dump              ${SRAid}
+
+
+#Selecting only read pairs for which the first read starts with G:
+#
+echo "time ${SCRIPTS}/selectReadsStartingWithG.pl    -o ${EXPERIMENT} -r ${SRAid}.fastq"
+time ${SCRIPTS}/selectReadsStartingWithG.pl    -o ${EXPERIMENT} -r ${SRAid}.fastq
+
+
+#Trimming the reads with trimmomatic:
+#
+echo "time ${SCRIPTS}/run_trimmomatic.sh"
+time ${SCRIPTS}/run_trimmomatic.sh
+
+
+#Removing ribosomal RNA hits with tagdust:
+#
+echo "time ${SCRIPTS}/run_tagdust.sh"
+time ${SCRIPTS}/run_tagdust.sh
+
+cd ..
+
+
+#Mapping the reads with the BWA aligner:
+#
+echo "time ${SCRIPTS}/run_BWA_alignment.sh"
+time ${SCRIPTS}/run_BWA_alignment.sh
+
+
+#Counting TSS tags and determining TSRs with TSRchitect:
+#
+cd tsr
+mkdir BAMDIR
+cd BAMDIR
+ln -s ../../BWAdir/${EXPERIMENT}.genome.bam ./
+ln -s ${BASEDIR}/${GENOME_DIR}/${GENOME_GFF} AtGenome.gff3
+cd ..
+echo "... now running Rscript ${EXPERIMENT}-wf*.Rscript"
+time ./xrunAwf all

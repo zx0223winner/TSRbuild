@@ -1,0 +1,48 @@
+#!/bin/bash
+
+#Setting variables:
+#
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source ${DIR}/AtEST.configfile
+
+#No further edits necessary from here on ...
+#
+SCRIPTS=${BASEDIR}/${EXPERIMENT}/scripts
+
+#Getting Arabidopsis ESTs from NCBI:
+#
+cd downloads
+${SCRIPTS}/getseq.pl
+# => AtEST-2-10-2019.fna
+cd ..
+#Note: getseq.pl will pull the current ESTs from NCBI; thus your results may
+#      be different from ours run on 2-10-2019; change the date label
+#      appropriately in getseq.pl and below, as well as the chunk size in the
+#      fastasplit.pl command ...
+
+#Performing the GeneSeqer spliced alignments:
+#
+cd alignments
+ln -s ../downloads/AtEST-2-10-2019.fna AtEST
+${GSQBIN}/fastasplit.pl -i AtEST -s 101
+${GSQBIN}/MakeArray AtEST1 >& MAlog1 &
+${GSQBIN}/MakeArray AtEST2 >& MAlog2 &
+${GSQBIN}/MakeArray AtEST3 >& MAlog3 &
+${GSQBIN}/MakeArray AtEST4 >& MAlog4 &
+wait
+${SCRIPTS}/xrungsq
+Rscript ${SCRIPTS}/gsq2bed.Rscript
+cd ..
+
+#Counting TSS tags and determining TSRs with TSRchitect:
+#
+cd tsr
+mkdir BEDDIR
+cd BEDDIR
+#Note: We are only interested in genomic promoters, thus:
+#
+egrep -v "^ChrC|^ChrM" ../../alignments/AtEST_gsq.bed  >  AtEST_gsq.bed
+ln -s ${BASEDIR}/${GENOME_DIR}/${GENOME_GFF} AtGenome.gff3
+cd ..
+echo "... now running Rscript ${EXPERIMENT}-wf*.Rscript"
+time ./xrunAwf all

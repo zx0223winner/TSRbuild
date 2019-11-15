@@ -1,0 +1,23 @@
+#AtCAGE
+#
+#Analysis of Tokizawa, M., Kusunoki, K., Koyama, H., Kurotani, A., Sakurai, T.,
+#Suzuki, Y., Sakamoto, T., Kurata, T., and Yamamoto, Y.Y. (2017).
+#Identification of Arabidopsis genic and non-genic promoters by paired-end
+#sequencing of TSS tags. Plant Journal 90, 587-605.
+#
+#
+
+#Prerequisites:
+#
+# - the AtGENOME directory in the location identified in AtCAGE.configfile
+#   (with processing done as specified in the AtGENOME/0README file)
+#
+
+#After the prerequisites are taken care of, execution of "xdoit" should produce
+#AtCAGE read pair alignments and the analysis of the mapped reads with
+#TSRchitect to identify and characterize TSS and TSR.
+
+#The easiest way to run the code is via the TSRchitect Singularity image, as
+#explained in the parent directory.  Alternatively, you can change the
+#AtCAGE.configfile to point to local installations of required software
+#packages.
