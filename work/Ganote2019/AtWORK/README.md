@@ -36,4 +36,5 @@ NOTE: You should definitely take a look at the scripts and configuration files
 NOTE: You will need about 60G of disk space to run the AtPEAT workflow.
 
 Enjoy
+
 Contact:	Volker Brendel (vbrendel@indiana.edu)
