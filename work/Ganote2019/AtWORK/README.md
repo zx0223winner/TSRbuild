@@ -31,7 +31,7 @@ NOTE: You should definitely take a look at the scripts and configuration files
 
       THREADS=8
 
-      which you should change to the number of processors you wish to use.
+which you should change to the number of processors you wish to use.
 
 NOTE: You will need about 60G of disk space to run the AtPEAT workflow.
 

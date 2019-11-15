@@ -4,10 +4,10 @@ echo "You can remove the STRIPES directory, if you like."
 
 mv STRIPES/gostripes.simg ./
 echo ""
-echo "Now go to directory yeast to reproduce our S. cerevisiae STRIPE-seq"
+echo "Now go to directory ./yeast to reproduce our S. cerevisiae STRIPE-seq"
 echo "data work. Follow the instructions given in the 0Record file."
 echo ""
-echo "Go to directory human to reproduce our human K562 cells STRIPE-seq"
+echo "Go to directory ./human to reproduce our human K562 cells STRIPE-seq"
 echo "data work. Follow the instructions given in the 0Record file."
 echo ""
 echo "Of course, you can also just use the instructions as a template to"

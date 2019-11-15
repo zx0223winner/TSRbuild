@@ -1,4 +1,5 @@
-Here we walk you through the data work described in our publications
+Here you will find instructions how to reproduce the data work described in our
+publication
 
 Robert A. Policastro, R. Taylor Raborn, Volker P. Brendel, and Gabriel E. Zentner
 (2019) _Simple and efficient mapping of transcription start sites with STRIPE-seq._
