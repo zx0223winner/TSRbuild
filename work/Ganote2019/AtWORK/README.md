@@ -14,7 +14,7 @@ After the preliminary steps are taken care of, all the data work can be
 reproduced by executing
 
 ```bash
-	./xrun-with-simg
+./xrun-with-simg
 ```
 
 which will download the TSRchitect Singularity image and execute the workflow
