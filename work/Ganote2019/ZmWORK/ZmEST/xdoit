@@ -1,0 +1,50 @@
+#!/bin/bash
+
+#Setting variables:
+#
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source ${DIR}/ZmEST.configfile
+
+#No further edits necessary from here on ...
+#
+SCRIPTS=${BASEDIR}/${EXPERIMENT}/scripts
+
+#Getting maize ESTs from NCBI:
+#
+cd downloads
+${SCRIPTS}/getseq.pl
+# => ZmEST-2-13-2019.fna
+cd ..
+#Note: getseq.pl will pull the current ESTs from NCBI; thus your results may
+#      be different from ours run on 2-13-2019; change the date label
+#      appropriately in getseq.pl and below, as well as the chunk size in the
+#      fastasplit.pl command ...
+
+#Performing the GeneSeqer spliced alignments:
+#
+cd alignments
+ln -s ../downloads/ZmEST-2-13-2019.fna ZmEST
+${GSQBIN}/fastasplit.pl -i ZmEST -s 104
+${GSQBIN}/MakeArray ZmEST1 >& MAlog1 &
+${GSQBIN}/MakeArray ZmEST2 >& MAlog2 &
+${GSQBIN}/MakeArray ZmEST3 >& MAlog3 &
+${GSQBIN}/MakeArray ZmEST4 >& MAlog4 &
+${GSQBIN}/MakeArray ZmEST5 >& MAlog5 &
+${GSQBIN}/MakeArray ZmEST6 >& MAlog6 &
+${GSQBIN}/MakeArray ZmEST7 >& MAlog7 &
+${GSQBIN}/MakeArray ZmEST8 >& MAlog8 &
+wait
+${SCRIPTS}/xrungsq
+Rscript ${SCRIPTS}/gsq2bed.Rscript
+cd ..
+
+#Counting TSS tags and determining TSRs with TSRchitect:
+#
+cd tsr
+mkdir BEDDIR
+cd BEDDIR
+ln -s ../../alignments/ZmEST_gsq.bed ./
+ln -s ${BASEDIR}/${GENOME_DIR}/${GENOME_GFF} ZmGenome.gff3
+cd ..
+echo "... now running Rscript ${EXPERIMENT}wf*.Rscript"
+time ./xrunZwf all
