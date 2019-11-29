@@ -15,6 +15,7 @@ library("GenomicRanges")
 
 BAMDIR  <- c("./BAMDIR")
 AtGFF3  <- c("./BAMDIR/AtGenome.gff3")
+sink(file=paste("AtPEAT","-wf1",".out",sep=""),type="output")
 
 # ... initializing the tssObj object:
 AtPEAT <- loadTSSobj("Megraw PEAT Experiment (Arabidopsis)", BAMDIR, isPairedBAM=TRUE, isPairedBED=FALSE, sampleNames=c("Sample1"), replicateIDs=c(1))

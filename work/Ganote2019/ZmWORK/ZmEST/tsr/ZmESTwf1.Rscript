@@ -15,6 +15,7 @@ library("GenomicRanges")
 
 BEDDIR  <- c("./BEDDIR")
 ZmGFF3  <- c("./BEDDIR/ZmGenome.gff3")
+sink(file=paste("ZmEST","-wf1",".out",sep=""),type="output")
 
 # ... initializing the tssObj object:
 ZmEST <- loadTSSobj("NCBI ESTs (Zea mays)", BEDDIR, isPairedBAM=FALSE, isPairedBED=FALSE, sampleNames=c("ZmESTs"), replicateIDs=c(1))

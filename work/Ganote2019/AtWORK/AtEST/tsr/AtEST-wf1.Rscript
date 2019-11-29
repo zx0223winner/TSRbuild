@@ -15,6 +15,7 @@ library("GenomicRanges")
 
 BEDDIR  <- c("./BEDDIR")
 AtGFF3  <- c("./BEDDIR/AtGenome.gff3")
+sink(file=paste("AtEST","-wf1",".out",sep=""),type="output")
 
 # ... initializing the tssObj object:
 AtEST <- loadTSSobj("NCBI ESTs (Arabidopsis)", BEDDIR, isPairedBAM=FALSE, isPairedBED=FALSE, sampleNames=c("AtESTs"), replicateIDs=c(1))

@@ -15,6 +15,7 @@ library("GenomicRanges")
 
 BAMDIR  <- c("./BAMDIR")
 AtGFF3  <- c("./BAMDIR/AtGenome.gff3")
+sink(file=paste("At5GRO","-wf1",".out",sep=""),type="output")
 
 # ... initializing the tssObj object:
 At5GRO <- loadTSSobj("5prime GRO Experiment (Arabidopsis)", BAMDIR, isPairedBAM=FALSE, isPairedBED=FALSE, sampleNames=c("Sample1"), replicateIDs=c(1))
