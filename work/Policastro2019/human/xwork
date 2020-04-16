@@ -1,6 +1,0 @@
-#Now for the real work:
-#
-sed -e "s#EXPERIMENT=demo#EXPERIMENT=GSF2268#; " ../GoSTRIPES/templates/xrun_samples >  xrun_samples
-chmod a+x xrun_samples
-#NOTE: This should take several hours.
-./xrun_samples
