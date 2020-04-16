@@ -1,0 +1,11 @@
+# Some of the code for this repository, especially the trimming and alignment portions, come from modified code written by the author.
+# This can be obtained as follows:
+# git clone https://github.com/mariakmejiaguerra/ZmTSSs_CAGE
+#- ensure all trimmed fastq files (e.g.  *_demultiplexed_trimmed_filtered.fastq) are removed prior to (re-)-running the workflow
+# Be sure to download the genome assembly and gff3 file in the ZmGENOMEv3 Directory as follows:
+# 'source 0README'
+# Please download rRNAdust at this location: http://fantom.gsc.riken.jp/5/suppl/rRNAdust/
+#- time ./xdoit >& err
+#==> job will take approximately 12 hours
+
+

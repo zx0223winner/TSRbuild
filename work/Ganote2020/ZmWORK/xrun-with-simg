@@ -1,0 +1,42 @@
+#!/bin/bash
+#
+# NOTE: This is a vanilla template to re-run everything from scratch.
+#       Take a look and make changes as necessary to adjust to your needs.
+
+workdir=$(pwd)
+
+#Set to "1" what you want to run:
+#
+pulltsrsimg=1
+runZmCAGE=0
+runZmEST=0
+
+
+if [ $pulltsrsimg == 1 ]
+  then
+    singularity pull --name tsr.simg shub://BrendelGroup/TSRchitect
+fi
+
+
+#Set $rws:
+#
+rws="singularity exec -e -B ${workdir} ${workdir}/tsr.simg"
+
+
+#Run xdoit with the tsr.simg Singularity container:
+#
+if [ $runZmCAGE == 1 ]
+  then
+    cd ZmCAGE
+    sed -i -e "s#SETBASEDIR#${workdir}#" ZmCAGE.configfile
+    $rws ./xdoit
+    cd ..
+fi
+
+if [ $runZmEST == 1 ]
+  then
+    cd ZmEST
+    sed -i -e "s#SETBASEDIR#${workdir}#" ZmEST.configfile
+    $rws ./xdoit
+    cd ..
+fi

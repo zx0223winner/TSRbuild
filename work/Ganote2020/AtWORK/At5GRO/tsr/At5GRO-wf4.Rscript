@@ -1,0 +1,52 @@
+loadWF3      <- 1
+
+
+# Start the fun ...: 
+#
+library("TSRchitect")
+library("dplyr")
+
+sink(file=paste("At5GRO","-wf4",".out",sep=""),type="output")
+
+
+if (loadWF3) {
+  load("At5GRO-wf3.RData")
+} else {
+  source("At5GRO-wf3.Rscript")
+}
+cat (At5GRO@title,"\tWorkflow 4\n")
+
+
+#Fine analyses:
+#
+cat("\n\n# Exploring particular genes:\n")
+options(width=1024)
+
+genesOfInterest <- c("AT1G01300","AT5G67580")
+
+#AT1G01300 = example positive strand (for pwindow=pupstream=pdownstream=250):
+#  ... the TSSs are inside, insideDist = -158 & -155; ie., 158/155 positions from the right
+#  end of the PRM range;  we expect a peak around pwindow/-pwindow, because the
+#  promoter range was selected pwindow nt upstream of the annotated gene start
+#  to pwindow nt downstream of the annotated gene start.
+#AT5G67580 = example negative strand (for pwindow=250):
+#  ... the TSS is inside, insideDist = +185; ie., 185 positions from the left
+#  end of the PRM range;  we expect a peak around pwindow/-pwindow, because the
+#  promoter range was selected pwindow nt upstream of the annotated gene start
+#  to pwindow nt downstream of the annotated gene start.
+
+
+for (mygene in genesOfInterest) {
+  cat("\n\nShowing data for gene:\t",mygene,"\n\n")
+  
+  cat("Entry in GRanges object 'genes':\n")
+  show(genes[genes$ID == mygene,])
+  
+  cat("\n\nTSRs in the gene promoter region:\n")
+  tsr <- At5GRO@tsrData[[1]]
+  show(BiocGenerics::subset(tsr, tsr$featureID == mygene))
+  
+  cat("\n\nTSSs in the gene promoter region as annotated in 'aTSSdf':\n")
+  mytssdf <- BiocGenerics::subset(aTSSdf, featureID == mygene)
+  print(as_tibble(mytssdf,ncol=14,width=Inf), n=Inf)
+}

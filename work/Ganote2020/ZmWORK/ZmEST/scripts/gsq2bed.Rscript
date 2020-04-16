@@ -1,0 +1,7 @@
+library("TSRchitect")
+
+GSQFILE <- c("./gsq.ZmEST_ZmGenome")
+BEDFILE <- c("./ZmEST_gsq.bed")
+
+# ... converting the gsq file into bed format
+gsq2bed(gsqFile=GSQFILE, outfile=BEDFILE)

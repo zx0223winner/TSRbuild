@@ -1,0 +1,21 @@
+#At5GRO
+#
+#Analysis of Hetzel, J., Duttke, S.H., Benner, C., and Chory, J. (2016).
+#Nascent RNA sequencing reveals distinct features in plant transcription.
+#Proceedings of the National Academy of Sciences 113, 12316-12321.
+#
+
+#Prerequisites:
+#
+# - the AtGENOME directory in the location identified in At5GRO.configfile
+#   (with processing done as specified in the AtGENOME/0README file)
+#
+
+#After the prerequisites are taken care of, execution of "xdoit" should produce
+#At5GRO read pair alignments and the analysis of the mapped reads with
+#TSRchitect to identify and characterize TSS and TSR.
+
+#The easiest way to run the code is via the TSRchitect Singularity image, as
+#explained in the parent directory.  Alternatively, you can change the
+#At5GRO.configfile to point to local installations of required software
+#packages.

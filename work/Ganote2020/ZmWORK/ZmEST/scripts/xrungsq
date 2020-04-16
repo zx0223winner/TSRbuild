@@ -1,0 +1,13 @@
+#!/bin/bash
+
+source ../ZmEST.configfile
+
+ESTfiles="ZmEST1 ZmEST2 ZmEST3 ZmEST4 ZmEST5 ZmEST6 ZmEST7 ZmEST8"
+genome=${BASEDIR}/${GENOME_DIR}/${GENOME_FILE}
+
+echo "Aligning ESTs from Z. mays using GeneSeqer ..."
+echo "${MPIRUN} -np 8 ${GENESEQERMPI} -s maize -x 16 -y 24 -z 48 -w 0.8 -m 5000000 -D ${ESTfiles} -L $genome > gsq.ZmEST_ZmGenome"
+
+${MPIRUN} -np 8 ${GENESEQERMPI} -s maize -x 16 -y 24 -z 48 -w 0.8 -m 5000000 -D ${ESTfiles} -L $genome > gsq.ZmEST_ZmGenome
+
+echo "Done"

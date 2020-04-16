@@ -1,0 +1,22 @@
+#!/bin/bash
+
+#Prerequisites:
+#
+# - the AtGENOME directory in the location identified in AtPEAT.configfile
+#   (with processing done as specified in the AtGENOME/0README file)
+#
+
+#Setting variables:
+#
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source ${DIR}/AtCOMBINED.configfile
+
+#No further edits necessary from here on ...
+#
+ln -s ${BASEDIR}/${GENOME_DIR}/${GENOME_GFF} AtGenome.gff3
+
+
+#Counting TSS tags and determining TSRs with TSRchitect:
+#
+echo "... now running Rscript ${EXPERIMENT}-wf*.Rscript"
+time ./xrunAwf all

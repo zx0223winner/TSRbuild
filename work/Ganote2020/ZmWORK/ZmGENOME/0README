@@ -1,0 +1,32 @@
+#Z. mays reference genome (repeat masked) and annotation Version 4 from the Gramene download site.
+#To retrieve the files used, execute "source 0README" in this directory.
+
+wget ftp://ftp.gramene.org/pub/gramene/release-60/fasta/zea_mays/dna/Zea_mays.B73_RefGen_v4.dna_rm.chromosome.1.fa.gz
+wget ftp://ftp.gramene.org/pub/gramene/release-60/fasta/zea_mays/dna/Zea_mays.B73_RefGen_v4.dna_rm.chromosome.2.fa.gz
+wget ftp://ftp.gramene.org/pub/gramene/release-60/fasta/zea_mays/dna/Zea_mays.B73_RefGen_v4.dna_rm.chromosome.3.fa.gz
+wget ftp://ftp.gramene.org/pub/gramene/release-60/fasta/zea_mays/dna/Zea_mays.B73_RefGen_v4.dna_rm.chromosome.4.fa.gz
+wget ftp://ftp.gramene.org/pub/gramene/release-60/fasta/zea_mays/dna/Zea_mays.B73_RefGen_v4.dna_rm.chromosome.5.fa.gz
+wget ftp://ftp.gramene.org/pub/gramene/release-60/fasta/zea_mays/dna/Zea_mays.B73_RefGen_v4.dna_rm.chromosome.6.fa.gz
+wget ftp://ftp.gramene.org/pub/gramene/release-60/fasta/zea_mays/dna/Zea_mays.B73_RefGen_v4.dna_rm.chromosome.7.fa.gz
+wget ftp://ftp.gramene.org/pub/gramene/release-60/fasta/zea_mays/dna/Zea_mays.B73_RefGen_v4.dna_rm.chromosome.8.fa.gz
+wget ftp://ftp.gramene.org/pub/gramene/release-60/fasta/zea_mays/dna/Zea_mays.B73_RefGen_v4.dna_rm.chromosome.9.fa.gz
+wget ftp://ftp.gramene.org/pub/gramene/release-60/fasta/zea_mays/dna/Zea_mays.B73_RefGen_v4.dna_rm.chromosome.10.fa.gz
+
+wget ftp://ftp.gramene.org/pub/gramene/release-60/gff3/zea_mays/Zea_mays.B73_RefGen_v4.42.chr.gff3.gz
+
+gunzip *.gz
+
+#Creating one (nuclear) genome file:
+#
+cat Zea_mays.B73_RefGen_v4.dna_rm.chromosome.1.fa Zea_mays.B73_RefGen_v4.dna_rm.chromosome.2.fa \
+	Zea_mays.B73_RefGen_v4.dna_rm.chromosome.3.fa Zea_mays.B73_RefGen_v4.dna_rm.chromosome.4.fa \
+	Zea_mays.B73_RefGen_v4.dna_rm.chromosome.5.fa Zea_mays.B73_RefGen_v4.dna_rm.chromosome.6.fa \
+	Zea_mays.B73_RefGen_v4.dna_rm.chromosome.7.fa Zea_mays.B73_RefGen_v4.dna_rm.chromosome.8.fa \
+	Zea_mays.B73_RefGen_v4.dna_rm.chromosome.9.fa Zea_mays.B73_RefGen_v4.dna_rm.chromosome.10.fa \
+	> Zea_mays.B73_RefGen_v4.genome.fa
+\rm Z*chromosome.*.fa
+
+#Tidying of the GFF3 file and creating the file Zea_mays.B73_RefGen_v4.42.genome.gff3 file to use
+# (this requires GenomeTools, available from genometools.org):
+#
+./xtidygff3

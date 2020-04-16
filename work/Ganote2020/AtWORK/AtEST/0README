@@ -1,0 +1,20 @@
+#AtEST
+#
+#Analysis of Arabidopsis EST 5'-ends to detect potential promoters.
+#
+
+#Prerequisites:
+#
+# - the AtGENOME directory in the location identified in AtEST.configfile
+#   (with processing done as specified in the AtGENOME/0README file)
+#
+
+#After the prerequisites are taken care of, execution of "xdoit" should
+#download Arabidopsis ESTs from NCBI, splice align the sequences to the
+#Arabidopsis genome using GeneSeqer, and finally analysis of the alignments with
+#TSRchitect to identify and characterize TSS and TSR.
+
+#The easiest way to run the code is via the TSRchitect Singularity image, as
+#explained in the parent directory.  Alternatively, you can change the
+#AtEST.configfile to point to local installations of required software
+#packages.

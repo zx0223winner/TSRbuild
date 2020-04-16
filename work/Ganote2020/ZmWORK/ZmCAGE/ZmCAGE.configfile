@@ -1,0 +1,23 @@
+#!/bin/bash
+
+BASEDIR=/projects/vbrendel/TSRpaper/rwsZm
+GENOME_DIR=ZmGENOME
+GENOME_FILE=Zea_mays.B73_RefGen_v4.genome.fa
+GENOME_GFF=Zea_mays.B73_RefGen_v4.42.genome.gff3
+RNAfile=${BASEDIR}/${GENOME_DIR}/Zm_grRNA.fa
+
+EXPERIMENT=ZmCAGE
+fastqDIR=${BASEDIR}/${EXPERIMENT}/fastq
+SCRIPTS=${BASEDIR}/${EXPERIMENT}/scripts
+SRAids="SRR2078285 SRR2078286 SRR2078287 SRR2078288 SRR2078289 SRR2078290 SRR2078291 SRR2078292"
+
+BWA=/opt/bin/bwa
+PYTHON3=/usr/bin/python3
+RSCRIPT=/usr/bin/Rscript
+SAMTOOLS=/opt/samtools/samtools
+SRATOOLKIT=/opt/sratoolkit.2.9.1-1-ubuntu64/bin
+TAGDUST=/usr/local/bin/tagdust
+TRIMMOMATIC=/opt/Trimmomatic-0.36/trimmomatic-0.36.jar
+TrueSeq2PE=/opt/Trimmomatic-0.36/adapters/TruSeq2-PE.fa
+
+THREADS=8

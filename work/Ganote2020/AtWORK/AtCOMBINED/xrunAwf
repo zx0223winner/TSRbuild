@@ -1,0 +1,18 @@
+#!/bin/bash
+#
+
+#Setting variables:
+#
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source ${DIR}/AtCOMBINED.configfile
+
+wf=$1
+
+if [ "$wf" == "all" ] ; then
+	${RSCRIPT} --default-packages=methods,datasets,utils,grDevices,graphics,stats  ${EXPERIMENT}-wf1.Rscript >& ${EXPERIMENT}-wf1.log
+	${RSCRIPT} --default-packages=methods,datasets,utils,grDevices,graphics,stats  ${EXPERIMENT}-wf2.Rscript >& ${EXPERIMENT}-wf2.log
+	${RSCRIPT} --default-packages=methods,datasets,utils,grDevices,graphics,stats  ${EXPERIMENT}-wf3.Rscript >& ${EXPERIMENT}-wf3.log
+	${RSCRIPT} --default-packages=methods,datasets,utils,grDevices,graphics,stats  ${EXPERIMENT}-wf4.Rscript >& ${EXPERIMENT}-wf4.log
+else
+	${RSCRIPT} --default-packages=methods,datasets,utils,grDevices,graphics,stats  ${EXPERIMENT}-wf${wf}.Rscript >& ${EXPERIMENT}-wf${wf}.log
+fi

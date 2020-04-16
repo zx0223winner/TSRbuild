@@ -1,0 +1,88 @@
+#!/bin/bash
+#
+export LC_ALL=C
+
+#Setting variables:
+#
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source ${DIR}/configfile
+
+
+BAMdir=${BASEDIR}/${EXPERIMENT}/BAMDIR
+
+mkdir ${BAMdir}
+cd ${BAMdir}
+
+
+#Re-alignment section (silence to use peat.sorted.bam instead; see below):
+#
+ln -s ${DOWNLOADdir}/MT_1.fastq ./
+ln -s ${DOWNLOADdir}/MT_2.fastq ./
+
+#We use the authors' supplied adapter removal script and add the reverse
+# complementation step to get the correct 5'-end of mRNAs:
+#
+${SCRIPTS}/matchAdapters --old --fq -i MT_1.fastq MT_2.fastq \
+	-oM MT_matched.fq -oN MT_notmatched.fq -l 18 - mm 3 > MT_matching_report.txt
+${SCRIPTS}/splitfastqPEPEAT.pl -i MT_matched.fq \
+	-o1 MT_tmpmatched_5p.fq -o2 MT_matched_3p.fq
+${FASTXTOOLKIT}/fastx_reverse_complement/fastx_reverse_complement -i MT_tmpmatched_5p.fq \
+	-o MT_matched_5p.fq
+\rm MT_matched.fq MT_tmpmatched_5p.fq
+
+#We build a hisat2 index and match allowing about one error in 20 nucleotides, looking for
+# --> --> mapped read pairs:
+#
+${HISAT2}/hisat2-build ${BASEDIR}/${GENOME_DIR}/${GENOME_FILE} AT
+${HISAT2}/hisat2  --score-min L,0,-0.6  --ff  -x AT -1 MT_matched_5p.fq -2 MT_matched_3p.fq \
+	-S FFalignment.sam >& errH
+${SAMTOOLS} view -H FFalignment.sam > tmpheader.sam
+
+#Now pulling out only the properly aligned mapped read pairs:
+#
+awk '($2 == 67 || $2 == 131 || $2 == 115 || $2 == 179) {print}' FFalignment.sam > ${EXPERIMENT}pairedFF.sam
+cat tmpheader.sam ${EXPERIMENT}pairedFF.sam | ${SAMTOOLS} view -bh > ${EXPERIMENT}pairedFF.bam
+
+ALGNFILE=${EXPERIMENT}pairedFF.bam
+
+
+#NOTE: To use the authors' original alignment file, silence the above Re-alignment
+#      section and uncomment the following lines instead.
+#
+#ALGNFILE=peat.sorted.bam
+#ln -s ${DOWNLOADdir}/${ALGNFILE} ./
+
+
+# ... using bamutils to remove reads that overlap rRNA locations as per
+#      At rRNA bedfile:
+#
+${NGSUtils}/bamutils filter ${ALGNFILE} no-rRNA.${EXPERIMENT}.bam \
+	-excludebed ${RNAbedfile} -failed ${EXPERIMENT}-rRNAreads
+
+# ... a bit of handywork to prepare for the scrubbing:
+#
+${SAMTOOLS} view -H no-rRNA.${EXPERIMENT}.bam > tmpheader.sam
+${SAMTOOLS} view no-rRNA.${EXPERIMENT}.bam  | sort -k1,1 > tmpfile.sam
+cat tmpheader.sam tmpfile.sam > sorted-no-rRNA.sam
+
+# ... scrubbing: we remove singlets left over by the bamutils filter that
+#      left one read of a read pair intact; we also remove read pairs in
+#      which one read was mapped with more than a 4kb gap (presumed intron)
+#      and reads with TLEN greater than 5000; potential introns >= 50 nt
+#      detecting read pairs are saved for further analysis (but not removed
+#      from the final set for TSRchitect analysis - ${EXPERIMENT}.genome.bam)
+#
+${SCRIPTS}/scrubSAMfile.pl -p -i 50 -I 4000 -t 5000 -o ${EXPERIMENT}.sam \
+	-s sorted-no-rRNA.sam >& scrub.log
+
+cat tmpheader.sam Scrubbed-${EXPERIMENT}.sam | \
+  ${SAMTOOLS} view -h | \
+  ${SAMTOOLS} sort -@ ${THREADS} -o Clean-${EXPERIMENT}.bam
+\rm tmpheader.sam tmpfile.sam
+
+#Clean-${EXPERIMENT}.bam includes ChrC and ChrM alignments, which we remove as follows:
+#
+${SAMTOOLS} index Clean-${EXPERIMENT}.bam
+${SAMTOOLS} view -b -h Clean-${EXPERIMENT}.bam 'Chr1' 'Chr2' 'Chr3' 'Chr4' 'Chr5' \
+	> ${EXPERIMENT}.genome.bam
+cd ..

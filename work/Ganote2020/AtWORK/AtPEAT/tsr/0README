@@ -1,0 +1,11 @@
+#TSRchitect analysis of the data.  To reproduce the data discussed in the paper please run
+#	source 0README
+#
+xrunAwf all >& err
+
+#xrunAwf invokes the R scripts AtPEAT-wf*.Rscript.  Please see comments in those scripts with
+# regard to our analyses of the AtPEAT data.  Text output is sent to file "AtPEAT-wf*.output",
+# and plots are printed to file "AtPEAT-wf2.pdf".  Output file TSS* and TSR* are produced by
+# TSRchitect.  For addtional data exploration, you might want to save R output from
+# AtPEAT-wf*.Rscript as an *.RData file and reload; see comments in AtPEAT-wf*.Rscript.
+

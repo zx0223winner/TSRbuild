@@ -1,0 +1,99 @@
+#!/bin/bash
+#
+
+#The script should be run with arguments:	<TSRsetFile>
+#
+
+inputfile=$1
+GFF3FILE=../HsGENOME/*gff3
+
+#Fields in the yeast (annotated) TSRsetCombined.txt file:
+#
+# 1-4	seq, start, end strand
+# 5-6	nTSSs, nTAGs
+# 7-11	tsrPeak, tsrWdth, tsrTrq, tsrSI, tsrMSI
+# 12-17	nTAGs per sample (even numbers) followed by normalized counts (odd numbers) for all 3 samples
+# 18	featureID
+
+
+#Number of TSRs associated with mRNA annotations:
+#
+m=`cut -f18 $inputfile | egrep -v "^featureID|^NA" | wc -l`
+
+#Number of TSRs not associated with mRNA annotations:
+#
+n=`cut -f18 $inputfile | sort  | egrep "^NA" | wc -l`
+
+#Check:
+#
+c=`tail -n+2 $inputfile | wc -l`
+
+echo "Number of TSRs     associated with mRNA annotations:	 $m"
+echo "Number of TSRs not associated with mRNA annotations:	 $n"
+echo "Check: wc -l on 'inputfile' minus 1 (header)       :	$c"
+echo ""
+
+
+egrep "	mRNA	" $GFF3FILE | cut -f9- | egrep "^ID=transcript:" | cut -d";" -f1 | cut -d"=" -f2 | sort -u > tmp_$1_all_mRNAs
+m=`cat tmp_$1_all_mRNAs | wc -l`
+echo "Number of mRNA annotations                         :	$m"
+#Number of  protein_coding mRNA annotations:
+#
+cut -f9- $GFF3FILE | egrep "biotype=protein_coding" | egrep "^ID=transcript:" | cut -d";" -f1 | cut -d"=" -f2 | sort -u > tmp_$1_all_pcd_mRNAs
+m=`cat tmp_$1_all_pcd_mRNAs | wc -l`
+echo "Number of protein_coding mRNA annotations          :	$m"
+
+
+#Number of protein_coding mRNA annotations associated with at least one TSR:
+#
+m=`cut -f18 $inputfile | sort -u | egrep -v "^featureID|^NA" | wc -l`
+echo "Number of mRNA annotations associated with at least one TSR:	 $m"
+
+cut -f18 $inputfile | sort -u | egrep -v "^featureID|^NA" > tmp_$1_tsr_mRNAs
+diff tmp_$1_all_mRNAs tmp_$1_tsr_mRNAs | egrep "^<" | cut -c3- > tmp_$1_noTSR_mRNAs
+n=`cat tmp_$1_noTSR_mRNAs | wc -l`
+echo "Number of mRNA annotations not associated with any TSR     :	 $n"
+
+
+#Genes associated with multiple TSRs:
+#
+sed -e "s/\(.*\)/awk -v locus=\1 '\$0 ~ locus {tsr[\$18] += 1}; END { for (k in tsr) print k \"\\\t\" tsr[k] }' $inputfile/" tmp_$1_tsr_mRNAs | bash | sort -k2,2 -nr > tmp_$1_mRNANBRtsr
+awk '$2 == 2 { print }' tmp_$1_mRNANBRtsr > tmp_$1_mRNA_2TSR
+m=`cat tmp_$1_mRNA_2TSR | wc -l`
+echo "Number of mRNA annotations associated with exactly   2 TSRs:	 $m	(file: tmp_$1_mRNA_2TSR)"
+awk '$2 == 3 { print }' tmp_$1_mRNANBRtsr > tmp_$1_mRNA_3TSR
+m=`cat tmp_$1_mRNA_3TSR | wc -l`
+echo "Number of mRNA annotations associated with exactly   3 TSRs:	 $m	(file: tmp_$1_mRNA_3TSR)"
+awk '$2 > 3 { print }' tmp_$1_mRNANBRtsr > tmp_$1_mRNA_4TSR
+m=`cat tmp_$1_mRNA_4TSR | wc -l`
+echo "Number of mRNA annotations associated with more than 3 TSRs:	 $m	(file: tmp_$1_mRNA_4TSR)"
+
+
+
+#Pulling out a table of raw counts per sample:
+#
+cut -f1-6,8,12,14,16,18 TSRsetCombined.txt > tmp_$1_raw_counts
+
+minthreshold=500
+maxthreshold=100
+
+#Pulling out a table of normalized counts per sample:
+#
+cut -f1-6,8,13,15,17,18 TSRsetCombined.txt > tmp_$1_normalized_counts
+head -1 tmp_$1_normalized_counts > tmp_$1_header
+
+tail -n +2 tmp_$1_normalized_counts | awk -v minthreshold=$minthreshold '$8 > minthreshold && $9 > minthreshold && $10 > minthreshold { print }' > tmp_$1_tmp_$1_strong_prm
+cat tmp_$1_header tmp_$1_tmp_$1_strong_prm > tmp_$1_strong_prm
+\rm tmp_$1_tmp_$1_strong_prm
+
+cut -f11 tmp_$1_strong_prm | egrep "transcript:" | sort -u > tmp_$1_strong_mRNA_lst
+sed -e "s#\(.*\)#egrep \"	ID=\1;\" $GFF3FILE#" tmp_$1_strong_mRNA_lst | bash | egrep "	mRNA	" > tmp_$1_strong_mRNAs
+sed -e "s#\(.*\)#egrep \"	ID=\1;\" $GFF3FILE#" tmp_$1_strong_mRNA_lst | bash | egrep "	mRNA	" | cut -d";" -f2 | cut -d"=" -f2 | sort -u > tmp_$1_strong_gene_lst
+sed -e "s#\(.*\)#egrep \"	ID=\1;\" $GFF3FILE#" tmp_$1_strong_gene_lst | bash | egrep "	gene	" > tmp_$1_strong_genes
+m=`tail -n +2 tmp_$1_strong_prm | wc -l`
+echo "Number of 'strong' promoters (TSRs with > $minthreshold tag counts in all 3 samples): $m"
+m=`cat tmp_$1_strong_mRNA_lst | wc -l`
+n=`cat tmp_$1_strong_gene_lst | wc -l`
+echo " List of associated mRNAs        :	tmp_$1_strong_mRNA_lst ($m mRNAs)"
+echo " List of associated genes        :	tmp_$1_strong_gene_lst ($n genes)"
+echo " Description  of associated genes:	tmp_$1_strong_genes"

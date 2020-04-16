@@ -1,0 +1,10 @@
+#Cleaning up:
+#
+sed -e "s#EXPERIMENT=demo#EXPERIMENT=GSF2268#; " ../GoSTRIPES/templates/xcleanup_samples >  xcleanup_samples
+chmod a+x xcleanup_samples
+#
+#NOTE: This will remove temporary files and archive others, greatly reducing
+#      disk space usage.
+#
+./xcleanup_samples
+../xsummarize_alignments

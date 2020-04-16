@@ -1,0 +1,69 @@
+#!/bin/bash
+
+#Setting variables:
+#
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source ${DIR}/ZmCAGE.configfile
+
+#No further edits necessary from here on ...
+#
+
+
+#Dumping the fastq data to directory ${fastqDIR} and trimming the barcode:
+#
+mkdir ${fastqDIR}
+cd ${fastqDIR}
+${SRATOOLKIT}/fastq-dump              ${SRAids}
+
+ln -s ${SCRIPTS}/barcode_sequence_trimmer.py ./
+
+SAMPLE=(SRR2078285 SRR2078286 SRR2078287 SRR2078288 SRR2078289 SRR2078290 SRR2078291 SRR2078292)
+for s in ${SAMPLE[@]}; do
+  echo "${PYTHON3} barcode_sequence_trimmer.py ${s}"
+  ${PYTHON3} barcode_sequence_trimmer.py ${s} &
+done
+wait
+
+
+#Removing ribosomal RNA hits with tagdust:
+#
+for s in ${SAMPLE[@]}; do
+  R1=${s}_demultiplexed_trimmed_filtered.fastq
+  OP=${s}_demultiplexed_trimmed_filtered_tagdusted
+
+  ${TAGDUST} -ref ${RNAfile} -dust 97 -t ${THREADS} -fe 3 -1 R:N ${R1}       -o ${OP}
+done
+cd ..
+
+
+#Mapping the reads with the BWA aligner:
+#
+echo "time ${SCRIPTS}/run_BWA_alignment.sh"
+time ${SCRIPTS}/run_BWA_alignment.sh
+
+
+
+#Selecting only read pairs for which the first read starts with G:
+#
+#echo "time ${SCRIPTS}/selectReadsStartingWithG.pl    -o ${EXPERIMENT} -r ${SRAid}.fastq"
+#time ${SCRIPTS}/selectReadsStartingWithG.pl    -o ${EXPERIMENT} -r ${SRAid}.fastq
+
+
+
+#Counting TSS tags and determining TSRs with TSRchitect:
+#
+cd tsr
+mkdir BAMDIR
+cd BAMDIR
+ln -s ../../BWAdir/SRR2078285_demultiplexed_trimmed_filtered_tagdusted_sorted_mapq_20.bam SRR2078285_B73-shoot-1.bam
+ln -s ../../BWAdir/SRR2078286_demultiplexed_trimmed_filtered_tagdusted_sorted_mapq_20.bam SRR2078286_B73-shoot-2.bam
+ln -s ../../BWAdir/SRR2078287_demultiplexed_trimmed_filtered_tagdusted_sorted_mapq_20.bam SRR2078287_B73-root-1.bam
+ln -s ../../BWAdir/SRR2078288_demultiplexed_trimmed_filtered_tagdusted_sorted_mapq_20.bam SRR2078288_B73-root-2.bam
+ln -s ../../BWAdir/SRR2078289_demultiplexed_trimmed_filtered_tagdusted_sorted_mapq_20.bam SRR2078289_Mo17-shoot-1.bam
+ln -s ../../BWAdir/SRR2078290_demultiplexed_trimmed_filtered_tagdusted_sorted_mapq_20.bam SRR2078290_Mo17-shoot-2.bam
+ln -s ../../BWAdir/SRR2078291_demultiplexed_trimmed_filtered_tagdusted_sorted_mapq_20.bam SRR2078291_Mo17-root-1.bam
+ln -s ../../BWAdir/SRR2078292_demultiplexed_trimmed_filtered_tagdusted_sorted_mapq_20.bam SRR2078292_Mo17-root-2.bam
+ln -s ${BASEDIR}/${GENOME_DIR}/${GENOME_GFF} ZmGenome.gff3
+cd ..
+echo "... now running Rscript ${EXPERIMENT}-wf*.Rscript"
+time ./xrunZwf all

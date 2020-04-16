@@ -1,0 +1,41 @@
+#Analysis of Morton, T., et al (2014) The Plant Cell 26, 2746-2760.
+#
+#The following provides download links provided by the journal or authors.
+#To populate this directory with the data needed for subsequent analyses,
+#please download "peat.sorted.bam" and "AtPEAT_read_processing.zip" as per
+#instructions. Assuming the downloaded files are saved in ~/Downloads on your
+#system, then the following command would create the files needed:
+#
+#	source 0README
+#
+#If your downloads are stored elsewhere, please adjust the commands at the
+#bottom of this file.
+#Optionally, remove files no longer needed:
+#	\rm -rf AtPEAT_read_processing*
+
+
+#Publication with Supplemental Data
+#
+#	http://www.plantcell.org/content/26/7/2746.long
+
+#Supplementary Materials
+#
+#	http://megraw.cgrb.oregonstate.edu/suppmats/3PEAT/
+#
+#	link to RAW BAM File:
+#		https://oregonstate.box.com/s/3lb3spmqbiuofhbubovc1z8bfthmxh6f
+#	=> download
+#		peat.sorted.bam
+
+#AtPEAT_read_processing (relevant to TSR determination, not ML)
+#
+#https://oregonstate.app.box.com/s/q3kvslxurfvtd7k0p71qttxwiifezbwk/folder/44720215456
+#	=> download
+#		AtPEAT_read_processing.zip
+
+mv ~/Downloads/peat.sorted.bam ./
+
+mv ~/Downloads/AtPEAT_read_processing.zip ./
+unzip *zip
+gunzip -c AtPEAT_read_processing/raw_data/MT_1.fastq.gz > MT_1.fastq
+gunzip -c AtPEAT_read_processing/raw_data/MT_2.fastq.gz > MT_2.fastq

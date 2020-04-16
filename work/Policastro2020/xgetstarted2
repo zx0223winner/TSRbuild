@@ -1,0 +1,10 @@
+echo "We now make sure that GoSTRIPES works for you by running the demo"
+echo "provided with the package, in directory STRIPES."
+echo "We'll track progress with 'tail -f err', so hit CTRL-C when all is"
+echo "done, and if all looks fine, proceed with xgetstarted3."
+echo ""
+cd STRIPES
+../GoSTRIPES/templates/xsetup_samples
+cd demo_s_mock/
+$rws make >& err &
+tail -f err
