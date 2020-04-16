@@ -2,8 +2,8 @@ Here you will find instructions how to reproduce the data work described in our
 publication
 
 Robert A. Policastro, R. Taylor Raborn, Volker P. Brendel, and Gabriel E. Zentner
-(2019) _Simple and efficient mapping of transcription start sites with STRIPE-seq._
-To be submitted.
+(2020) _Simple and efficient mapping of transcription start sites with STRIPE-seq._
+In review.
 
 
 Give yourself a clean working directory on a nice Linux machine (10 cores,
