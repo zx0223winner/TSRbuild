@@ -11,6 +11,7 @@ SCRIPTS=${BASEDIR}/${EXPERIMENT}/scripts
 
 #Getting Arabidopsis ESTs from NCBI:
 #
+mkdir downloads
 cd downloads
 ${SCRIPTS}/getseq.pl
 # => AtEST-2-10-2019.fna
@@ -22,6 +23,7 @@ cd ..
 
 #Performing the GeneSeqer spliced alignments:
 #
+mkdir alignments
 cd alignments
 ln -s ../downloads/AtEST-2-10-2019.fna AtEST
 ${GSQBIN}/fastasplit.pl -i AtEST -s 101

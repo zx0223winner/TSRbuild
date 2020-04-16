@@ -11,6 +11,7 @@ SCRIPTS=${BASEDIR}/${EXPERIMENT}/scripts
 
 #Getting maize ESTs from NCBI:
 #
+mkdir downloads
 cd downloads
 ${SCRIPTS}/getseq.pl
 # => ZmEST-2-13-2019.fna
@@ -22,6 +23,7 @@ cd ..
 
 #Performing the GeneSeqer spliced alignments:
 #
+mkdir alignments
 cd alignments
 ln -s ../downloads/ZmEST-2-13-2019.fna ZmEST
 ${GSQBIN}/fastasplit.pl -i ZmEST -s 104
