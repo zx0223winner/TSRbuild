@@ -20,7 +20,7 @@ xrunwfHs script as follows:
 
 Once you have the output of the Rscripts, you may want to inspect the output
 data for obvious characteristics: how many TSRs have been predicted, how do they
-match up with current gene annotation, what the genes with strong promoter
+match up with current gene annotation, what are the genes with strong promoter
 usage, etc.. We provide the xexploreTSRset* scripts as templates for what can be
 done easily without indepth analyis - try it, change it, do the indepth
 analyses ...

@@ -1,0 +1,12 @@
+singularity exec -e gostripes.simg fasterq-dump SRR10759416
+singularity exec -e gostripes.simg fasterq-dump SRR10759417
+singularity exec -e gostripes.simg fasterq-dump SRR10759418
+singularity exec -e gostripes.simg fasterq-dump SRR10759420
+singularity exec -e gostripes.simg fasterq-dump SRR10759419
+singularity exec -e gostripes.simg fasterq-dump SRR10759421
+singularity exec -e gostripes.simg fasterq-dump SRR10759422
+singularity exec -e gostripes.simg fasterq-dump SRR10759423
+singularity exec -e gostripes.simg fasterq-dump SRR10759424
+singularity exec -e gostripes.simg fasterq-dump SRR10759425
+singularity exec -e gostripes.simg fasterq-dump SRR10759426
+singularity exec -e gostripes.simg fasterq-dump SRR10759427

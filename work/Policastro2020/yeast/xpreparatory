@@ -4,19 +4,27 @@ cd ScGENOME
 source 0README
 cd ..
 
-#The downloads/stripeseq directory contains empty files with names corresponding#to the real read data files on our system.
-#To reproduce our analyses, you must populate the directory with the real goods.
-
-#The file samples.tsv assumes implicitely that the read data are accessible
+#Get the data:
+#
+#The file samples.tsv assumes implicitly that the read data are accessible
 #in the download/stripeseq directory under the listed file name prefixes.
+#If you have NCBI SRA Toolkit installed, the following will download the
+#relevant STRIPE-seq read data:
+cd downloads/stripeseq
+./xgetdata
+#If you done have the toolkit installed, follow the instructions below to
+#define the singularity shortcut command as $rws, then run xgetdata from
+#the toolkit installed in the container:
+$rws ./xgetdata
+cd ../..
 
 #Let's set up a template Makefile to run the workflow:
 #
-sed -e "s#{RAWREAD1}.fq#{RAWREAD1}.fastq.gz#; s#{RAWREAD2}.fq#{RAWREAD2}.fastq.gz#;" ../GoSTRIPES/templates/Makefile_Sc >  Makefile_Sc
+sed -e "s#{RAWREAD1}.fq#{RAWREAD1}.fastq#; s#{RAWREAD2}.fq#{RAWREAD2}.fastq#;" ../GoSTRIPES/templates/Makefile_Sc >  Makefile_Sc
 
 #And now we set up the sample directories to get the work done:
 #
-sed -e "s#EXPERIMENT=demo#EXPERIMENT=GSF2268#; s#{READFILESTEM\[i\]}_R1#{READFILESTEM[i]}_R1_001#; s#{READFILESTEM\[i\]}_R2#{READFILESTEM[i]}_R2_001#; " ../GoSTRIPES/templates/xsetup_samples >  xsetup_samples
+sed -e "s#EXPERIMENT=demo#EXPERIMENT=GSF2268#; s#{READFILESTEM\[i\]}_R1#{READFILESTEM[i]}_1#; s#{READFILESTEM\[i\]}_R2#{READFILESTEM[i]}_2#; " ../GoSTRIPES/templates/xsetup_samples >  xsetup_samples
 chmod a+x xsetup_samples
 #NOTE: You should adjust the Makefile parameters to choices that are appropriate
 #      for your system. As provided, the workflow will run with 8 cores.
