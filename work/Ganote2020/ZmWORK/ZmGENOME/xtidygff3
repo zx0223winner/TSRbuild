@@ -1,0 +1,7 @@
+#!/bin/bash
+#
+
+gt gff3 -sort -retainids -tidy -addintrons -o Zea_mays.B73_RefGen_v4.42.chr_tidy.gff3 \
+	Zea_mays.B73_RefGen_v4.42.chr.gff3 
+
+egrep -v "^scaffold|^Mt|^Pt" Zea_mays.B73_RefGen_v4.42.chr_tidy.gff3 > Zea_mays.B73_RefGen_v4.42.genome.gff3

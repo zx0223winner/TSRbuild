@@ -1,0 +1,15 @@
+#!/bin/bash
+
+BASEDIR=SETBASEDIR
+GENOME_DIR=AtGENOME
+GENOME_FILE=TAIR10_genome.fasta
+GENOME_GFF=TAIR10_GFF3_genes.gff
+
+EXPERIMENT=AtEST
+SCRIPTS=${BASEDIR}/${EXPERIMENT}/scripts
+
+GSQBIN=/usr/local/bin
+GENESEQERMPI=${GSQBIN}/GeneSeqerMPIl
+MPIRUN=/usr/bin/mpirun
+
+RSCRIPT=/usr/bin/Rscript

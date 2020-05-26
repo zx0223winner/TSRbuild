@@ -1,0 +1,13 @@
+#!/bin/bash
+
+source ../AtEST.configfile
+
+ESTfiles="AtEST1 AtEST2 AtEST3 AtEST4"
+genome=${BASEDIR}/${GENOME_DIR}/${GENOME_FILE}
+
+echo "Aligning ESTs from A. thaliana using GeneSeqer ..."
+echo "${MPIRUN} -np 8 ${GENESEQERMPI} -s Arabidopsis -x 16 -y 24 -z 48 -w 0.8 -m 5000000 -D ${ESTfiles} -L $genome > gsq.AtEST_AtGenome"
+
+${MPIRUN} -np 8 ${GENESEQERMPI} -s Arabidopsis -x 16 -y 24 -z 48 -w 0.8 -m 5000000 -D ${ESTfiles} -L $genome > gsq.AtEST_AtGenome
+
+echo "Done"

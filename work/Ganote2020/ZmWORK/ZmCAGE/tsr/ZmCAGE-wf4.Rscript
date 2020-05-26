@@ -1,0 +1,52 @@
+loadWF3      <- 1
+
+
+# Start the fun ...: 
+#
+library("TSRchitect")
+library("dplyr")
+
+sink(file=paste("ZmCAGE","-wf4",".out",sep=""),type="output")
+
+
+if (loadWF3) {
+  load("ZmCAGE-wf3.RData")
+} else {
+  source("ZmCAGE-wf3.Rscript")
+}
+cat (ZmCAGE@title,"\tWorkflow 4\n")
+
+
+#Fine analyses:
+#
+cat("\n\n# Exploring particular genes:\n")
+options(width=1024)
+
+genesOfInterest <- c("gene:Zm00001d044122","gene:Zm00001d048611","gene:Zm00001d011297","gene:Zm00001d018370")	# ... genome annotation V4
+
+for (mygene in genesOfInterest) {
+  cat("\n\nShowing data for gene:\t",mygene,"\n\n")
+  
+  cat("Entry in GRanges object 'genes':\n")
+  show(genes[genes$ID == mygene,])
+  
+# Set the sample to be analyzed.  For B73, we have two replicates of "shoot" (merged
+#  sample 1) and two replicates of "root" (merged sample 2), followed by two
+#  replicates each for Mo17 shoot and root.
+datasetsToExplore <- c(1,2,3,4)
+
+  cat("\n\nTSRs for the combined samples in the gene promoter region:\n")
+  tsr <- ZmCAGE@tsrDataMerged[[5]]
+  show(BiocGenerics::subset(tsr, tsr$featureID == mygene))
+  for (datasetnbr in datasetsToExplore) {
+    cat("\n\nTSRs for sample ",datasetnbr," in the gene promoter region:\n")
+    tsr <- ZmCAGE@tsrDataMerged[[datasetnbr]]
+    show(BiocGenerics::subset(tsr, tsr$featureID == mygene))
+  }
+  
+  for (datasetnbr in datasetsToExplore) {
+    cat("\n\nSample ",datasetnbr," TSSs in the gene promoter region as annotated in 'aTSSdf':\n")
+    mytssdf <- BiocGenerics::subset(aTSSdfList[[datasetnbr]], featureID == mygene)
+    print(as_tibble(mytssdf,ncol=14,width=Inf), n=Inf)
+  }
+}

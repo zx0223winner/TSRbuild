@@ -1,0 +1,18 @@
+#Arabidopsis thaliana reference genome and annotation from TAIR
+# (www.arabidopsis.org).
+#To retrieve the files used, execute "source 0README" in this directory.
+
+wget https://www.arabidopsis.org/download_files/Genes/TAIR10_genome_release/TAIR10_chromosome_files/TAIR10_chr_all.fas
+wget https://www.arabidopsis.org/download_files/Genes/TAIR10_genome_release/TAIR10_gff3/TAIR10_GFF3_genes.gff
+
+#The supplied TAIR10_GFF3_genes.gff will be modified to annotate the genomic
+# 25S rRNA genes as per files At_grRNA.* (with temporary names AT2G99999 and
+# AT3G99999; suggestions will be submitted to TAIR):
+#
+patch -b TAIR10_GFF3_genes.gff patch-gff3
+
+#We need to reheader the chromosome names in the genome assembly file to maintain
+#consistency with those of the GFF3 file:
+#
+sed -e "s/^>/>Chr/g" TAIR10_chr_all.fas > TAIR10_genome.fasta
+sed -i -e "s/^>Chrmitochondria/>ChrM/g" -e "s/^>Chrchloroplast/>ChrC/g" TAIR10_genome.fasta

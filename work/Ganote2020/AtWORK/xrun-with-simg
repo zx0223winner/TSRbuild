@@ -1,0 +1,80 @@
+#!/bin/bash
+#
+# NOTE: This is a vanilla template to re-run everything from scratch.
+#       Take a look and make changes as necessary to adjust to your needs.
+
+workdir=$(pwd)
+
+#Set to "1" what you want to run:
+#
+pulltsrsimg=1
+runAtPEAT=0
+runAtCAGE=0
+runAtOligo=0
+runAt5GRO=0
+runAtEST=0
+runAtCOMBINED=0
+
+
+if [ $pulltsrsimg == 1 ]
+  then
+    singularity pull --name tsr.simg shub://BrendelGroup/TSRchitect
+fi
+
+
+#Set $rws:
+#
+rws="singularity exec -e -B ${workdir} ${workdir}/tsr.simg"
+
+
+#Run xdoit with the tsr.simg Singularity container:
+#
+if [ $runAtPEAT == 1 ]
+  then
+    cd AtPEAT
+    sed -i -e "s#SETBASEDIR#${workdir}#" AtPEAT.configfile
+    $rws ./xdoit
+    cd ..
+fi
+
+if [ $runAtCAGE == 1 ]
+  then
+    cd AtCAGE
+    sed -i -e "s#SETBASEDIR#${workdir}#" AtCAGE.configfile
+    $rws ./xdoit
+    cd ..
+fi
+
+if [ $runAtOligo == 1 ]
+  then
+    cd AtOligo
+    sed -i -e "s#SETBASEDIR#${workdir}#" AtOligo.configfile
+    $rws ./xdoit
+    cd ..
+fi
+
+if [ $runAt5GRO == 1 ]
+  then
+    cd At5GRO
+    sed -i -e "s#SETBASEDIR#${workdir}#" At5GRO.configfile
+    $rws ./xdoit
+    cd ..
+fi
+
+if [ $runAtEST == 1 ]
+  then
+    cd AtEST
+    sed -i -e "s#SETBASEDIR#${workdir}#" AtEST.configfile
+    $rws ./xdoit
+    cd ..
+fi
+
+if [ $runAtCOMBINED == 1 ]
+  then
+    cd AtCOMBINED
+    sed -i -e "s#SETBASEDIR#${workdir}#" AtCOMBINED.configfile
+    sed -i -e "s#SETBASEDIR#${workdir}#" allPEexp.tsv
+    sed -i -e "s#SETBASEDIR#${workdir}#" allSEexp.tsv
+    $rws ./xdoit
+    cd ..
+fi

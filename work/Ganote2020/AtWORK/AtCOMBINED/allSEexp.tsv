@@ -1,0 +1,3 @@
+SAMPLE	ReplicateID	FILE
+AtOligo	1	SETBASEDIR/AtOligo/tsr/BAMDIR/AtOligo.genome.bam
+At5GRO	1	SETBASEDIR/At5GRO/tsr/BAMDIR/At5GRO.genome.bam
