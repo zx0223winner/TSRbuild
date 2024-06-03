@@ -10,6 +10,11 @@ cd ..
 #in the download/stripeseq directory under the listed file name prefixes.
 #If you have NCBI SRA Toolkit installed, the following will download the
 #relevant STRIPE-seq read data:
+
+cd ..
+cp gostripes.simg downloads/stripeseq/gostripes.simg
+cd ./yeast
+
 cd downloads/stripeseq
 ./xgetdata
 #If you done have the toolkit installed, follow the instructions below to
